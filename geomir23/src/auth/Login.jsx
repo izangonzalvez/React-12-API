@@ -9,12 +9,8 @@ export const Login = ({ setLogin }) => {
   // Implementem codi de gestió 
   const { register, handleSubmit,formState: { errors }, reset  } = useForm();
 
-
-  //let [email,setEmail] = useState("");
-  //let [password, setPassword] = useState("");
   let [ error, setError] = useState("");
 
-  
   let usuaris = []
  
   let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
@@ -26,41 +22,27 @@ export const Login = ({ setLogin }) => {
   usuaris = JSON.parse(localStorage.getItem('usuaris')) || [];
   
   const check_login = (data) =>  {
-
-    //e.preventDefault();
-
-    console.log("Comprovant credencials....")
-
-    console.log(data)
-
-    let trobats = usuaris.filter(objecte => objecte.email === data.email);
-
-
-    console.log(trobats)
-
-    if (trobats.length > 0 &&  trobats[0].password === data.password)
-    {
-            setAuthToken(trobats[0])
-            localStorage.setItem('authToken', JSON.stringify(trobats[0]));
-            console.log("ayayayaya")
-            console.log(trobats[0])
-    }
     
-    else
-    {
-        setError("Usuari i/o contrasenya incorrectes")
-    }
-        
-
+    fetch("https://backend.insjoaquimmir.cat/api/login", {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(data),
+    })
+        .then((resposta) => resposta.json())
+        .then((resposta) => {
+            console.log(resposta);
+            if (resposta.success)
+                localStorage.setItem('authToken', JSON.stringify(resposta.authToken));
+                setAuthToken(resposta.authToken)
+        })
+        .catch((error) => {
+            console.log(error);
+            alert("Catchch");
+        });
   }
-
-    
-
-
-
-
-
-    
   
   return (
     

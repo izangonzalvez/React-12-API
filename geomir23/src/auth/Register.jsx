@@ -43,6 +43,29 @@ export const Register = ({ setLogin }) => {
         // Mètode d'useForm que permet generar errors a través del hook 
         setError('duplicatedUser', { type: 'custom', message: 'Aquest usuari ja existeix' });
     }
+    
+    fetch("https://backend.insjoaquimmir.cat/api/register", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      // Si els noms i les variables coincideix, podem simplificar
+      body: JSON.stringify({ name, email, password })
+    })
+      .then((data) => data.json())
+      .then((resposta) => {
+        console.log(resposta);
+        if (resposta.success === true) {
+          alert(resposta.authToken);
+        }
+      })
+      .catch((data) => {
+        console.log(data);
+        alert("Catchch");
+      });
+
+    alert("He enviat les Dades:  " + email + "/" + password);
   };
 
 

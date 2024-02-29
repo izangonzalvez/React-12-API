@@ -22,26 +22,28 @@ export const Login = ({ setLogin }) => {
   usuaris = JSON.parse(localStorage.getItem('usuaris')) || [];
   
   const check_login = (data) =>  {
+    const {email,password } = data
     
-    fetch("https://backend.insjoaquimmir.cat/api/login", {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(data),
-    })
-        .then((resposta) => resposta.json())
-        .then((resposta) => {
-            console.log(resposta);
-            if (resposta.success)
-                localStorage.setItem('authToken', JSON.stringify(resposta.authToken));
-                setAuthToken(resposta.authToken)
-        })
-        .catch((error) => {
-            console.log(error);
+    const login = async() =>{
+        const data = await fetch("https://backend.insjoaquimmir.cat/api/login", {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            },
+            method: "POST",
+            body: JSON.stringify({email, password})
+          })
+        const response = await data.json()
+
+        if (response.success) {
+            localStorage.setItem('authToken', JSON.stringify(response.authToken));
+            setAuthToken(response.authToken);
+        } else {
+            console.log(response);
             alert("Catchch");
-        });
+        }
+    }
+    login() 
   }
   
   return (

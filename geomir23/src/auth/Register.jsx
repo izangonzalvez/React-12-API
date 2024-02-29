@@ -1,8 +1,13 @@
 import React from "react";
+import { useContext } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { UserContext } from "../userContext";
 
 export const Register = ({ setLogin }) => {
+
+  let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
+
   const {
     register,
     handleSubmit,
@@ -16,56 +21,32 @@ export const Register = ({ setLogin }) => {
   usuaris = JSON.parse(localStorage.getItem("usuaris")) || [];
   console.log(usuaris)
 
-  //let [ registerr,setRegisterr] = useState({});
-  //let [ error, setError] = useState("");
-
-  function teDuplicats(array, nouObjecte) {
-    // Filtrar los objetos con el mismo correo electrónico
-    const duplicats = array.filter(
-      (objecte) => objecte.email === nouObjecte.email
-    );
-
-    console.log(duplicats);
-    // Si hay al menos un duplicado, devolver true
-    return duplicats.length > 0;
-  }
-
   const doRegister = (data) => {
-    console.log(data);
     
     const { name,email,password } = data
 
-    // Detectemm si té duplicats
-    if (!teDuplicats(usuaris, data)) {
-      usuaris.push({ name,email,password })
-      localStorage.setItem('usuaris', JSON.stringify(usuaris));
-    } else {
-        // Mètode d'useForm que permet generar errors a través del hook 
-        setError('duplicatedUser', { type: 'custom', message: 'Aquest usuari ja existeix' });
-    }
-    
-    fetch("https://backend.insjoaquimmir.cat/api/register", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      // Si els noms i les variables coincideix, podem simplificar
-      body: JSON.stringify({ name, email, password })
-    })
-      .then((data) => data.json())
-      .then((resposta) => {
-        console.log(resposta);
-        if (resposta.success === true) {
-          alert(resposta.authToken);
-        }
+    const register = async () => {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/register", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({name, email, password})
       })
-      .catch((data) => {
-        console.log(data);
-        alert("Catchch");
-      });
+      const response = await data.json();
+      console.log(response)
 
-    alert("He enviat les Dades:  " + email + "/" + password);
+      if (response.success) {
+          localStorage.setItem('authToken', JSON.stringify(response.authToken));
+          setAuthToken(response.authToken);
+      } else {
+        console.log(response);
+        alert("Cathchch");
+      }
+      
+    }
+    register()
   };
 
 

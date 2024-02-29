@@ -6,27 +6,63 @@ import { UserContext } from '../../userContext';
 
 export const Header = () => {
 
-    let { authToken,setAuthToken } = useContext(UserContext)
-    let [ usuari,setUsuari] = useState("")
     let [ roles, setRoles] = useState([]);
-    let { name,email } = authToken
+    let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
+    let token =  JSON.parse(localStorage.getItem('authToken')) || "";
+    console.log("hola")
+    setAuthToken(token)
+    console.log(authToken)
+    useEffect ( ()=> {
 
+        fetch("https://backend.insjoaquimmir.cat/api/user", {
+            headers: {
+                Accept: "application/json",
+                Authorization: `Bearer ${authToken}`,
+                },
+            method: "GET",
+        })
+            .then((resposta) => resposta.json())
+            .then((resposta) => {
+                if(resposta.success)
+                    console.log(resposta)
+                    setUsuari(resposta.user.name)
+                    setRoles(resposta.roles)
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("Catchch");
+            });
+        
+    },[])
 
-    
-
-    
     const logout = (e)=> {
 
         e.preventDefault();
         setAuthToken("")
         localStorage.removeItem('authToken');
+          
 
-
-
-
-
+        fetch("https://backend.insjoaquimmir.cat/api/logout", {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${authToken}`,
+              },
+            method: "POST",
+        })
+            .then((resposta) => resposta.json())
+            .then((resposta) => {
+                if(resposta.success)
+                    localStorage.removeItem('authToken');
+                    setAuthToken(null)
+            })
+            .catch((error) => {
+                console.log(error);
+                alert("Catchch");
+            });
     }
-  return (
+    
+    return (
       <>
   
       <nav className="bg-indigo-400 px-4 p-4">
@@ -43,8 +79,11 @@ export const Header = () => {
               </div>
           </div>
           <div>
-              { name } ( 
-              {/* { roles.map ((v)=> ( <span key={v}> {v} </span>))}) -  */}
+              { usuari } <a>(<span></span> { roles.map (  (v)=> (
+                            <span key={v}> {v} </span>
+                        ) ) })</a>
+            ( 
+              <a href=""></a>
               <a className="text-orange-800" onClick={logout} href="">Logout</a>)
               
           </div>

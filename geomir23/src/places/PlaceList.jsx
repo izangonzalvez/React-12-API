@@ -9,8 +9,7 @@ export const PlaceList = ({v, deletePlace}) => {
 
     let usuari = authToken.email
 
-    
-    
+    console.log("AAAAAAAAA")
     
     // }
     return (
@@ -33,7 +32,7 @@ export const PlaceList = ({v, deletePlace}) => {
           { v.longitude}
         </td>
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-          { v.visibility }
+          { v.visibility.id }
         </td>
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
           { v.author.name }

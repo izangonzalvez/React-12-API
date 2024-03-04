@@ -21,7 +21,7 @@ export const PostList = ({v, deletePost}) => {
         <tr key={ v.id } className="bg-gray-100 border-b">
 
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-        { v.description.substring(0,8)+"..." }
+        { v.body.substring(0,8)+"..." }
         </td>
         
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
@@ -31,7 +31,7 @@ export const PostList = ({v, deletePost}) => {
           { v.longitude}
         </td>
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-          { v.visibility }
+          { v.visibility.id }
         </td>
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
           { v.author.name }

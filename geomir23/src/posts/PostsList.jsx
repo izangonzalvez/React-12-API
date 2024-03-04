@@ -10,7 +10,7 @@ import { PostList } from './PostList';
 export const PostsList = () => {
 
   // desa el retorn de dades de l'api posts
-  let [ posts, setPosts ] = useState(JSON.parse(localStorage.getItem('posts')) || []);
+  let [ posts, setPosts ] = useState ([]);
 
   console.log(posts)
   // Ho utilitzem per provar un refresc quan esborrem un element
@@ -20,6 +20,29 @@ export const PostsList = () => {
 
  let usuari = authToken.email
 
+ const getPosts = async (e) => {
+  try {
+    const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      method: "GET",
+    })
+    const resposta = await data.json();
+    if (resposta.success === true) {
+      setPosts(resposta.data);
+    }else{
+      console.log("La resposta no ha triomfat");
+    }            
+  } catch {
+    console.log("Error");
+  }
+};
+
+useEffect(()=>{
+  getPosts();
+}, []) 
  console.log(usuari)
 
 
@@ -86,7 +109,7 @@ const deletePost = (id,e) => {
             { posts.map( (v )=> { return (
             
             <>
-            { v.visibility == 1 || v.author.email == usuari ? (<PostList  deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.email == usuari ? (<PostList  deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
             
           
             </>

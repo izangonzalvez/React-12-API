@@ -6,62 +6,94 @@ import { UserContext } from '../../userContext';
 
 export const Header = () => {
 
-    let [ roles, setRoles] = useState([]);
+    let [ roles, setRoles ] = useState([]);
+    
     let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
     let token =  JSON.parse(localStorage.getItem('authToken')) || "";
     console.log("hola")
     setAuthToken(token)
     console.log(authToken)
-    useEffect ( ()=> {
 
-        fetch("https://backend.insjoaquimmir.cat/api/user", {
+    const getUser = async (e) => {
+        try {
+          const data = await fetch("https://backend.insjoaquimmir.cat/api/user", {
             headers: {
-                Accept: "application/json",
-                Authorization: `Bearer ${authToken}`,
-                },
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
             method: "GET",
-        })
-            .then((resposta) => resposta.json())
-            .then((resposta) => {
-                if(resposta.success)
-                    console.log(resposta)
-                    setUsuari(resposta.user.name)
-                    setRoles(resposta.roles)
-            })
-            .catch((error) => {
-                console.log(error);
-                alert("Catchch");
-            });
-        
-    },[])
+          })
+          const resposta = await data.json();
+          if (resposta.success === true) {
+            setUsuari(resposta.user.name);
+            setRoles(resposta.roles);
+          }else{
+            console.log("La resposta no ha triomfat");
+          }            
+        } catch {
+          console.log("Error");
+        }
+      };
+    
+      useEffect(()=>{
+        getUser();
+      }, []) 
 
-    const logout = (e)=> {
+    // const logout = (e)=> {
 
+    //     e.preventDefault();
+    //     setAuthToken("")
+    //     localStorage.removeItem('authToken');
+          
+
+    //     fetch("https://backend.insjoaquimmir.cat/api/logout", {
+    //         headers: {
+    //             Accept: "application/json",
+    //             "Content-Type": "application/json",
+    //             "Authorization": `Bearer ${authToken}`,
+    //           },
+    //         method: "POST",
+    //     })
+    //         .then((resposta) => resposta.json())
+    //         .then((resposta) => {
+    //             if(resposta.success)
+    //                 localStorage.removeItem('authToken');
+    //                 setAuthToken(null)
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //             alert("Catchch");
+    //         });
+    // }
+    
+    const logout = async (e) => {
         e.preventDefault();
         setAuthToken("")
         localStorage.removeItem('authToken');
-          
-
-        fetch("https://backend.insjoaquimmir.cat/api/logout", {
+      
+        // Enviam dades a l'aPI i recollim resultat
+        try {
+          const data = await fetch("https://backend.insjoaquimmir.cat/api/logout", {
             headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${authToken}`,
-              },
+              Accept: "application/json",
+              Authorization: 'Bearer '  + authToken,
+          
+            },
             method: "POST",
-        })
-            .then((resposta) => resposta.json())
-            .then((resposta) => {
-                if(resposta.success)
-                    localStorage.removeItem('authToken');
-                    setAuthToken(null)
-            })
-            .catch((error) => {
-                console.log(error);
-                alert("Catchch");
-            });
-    }
+          })
     
+          const resposta = await data.json();
+          if (resposta.success === true){
+            // console.log(resposta.authToken);
+           
+            localStorage.removeItem('authToken');
+            setAuthToken(null)
+    
+          } 
+        } catch {
+          console.log("Error");
+        }
+      };
     return (
       <>
   

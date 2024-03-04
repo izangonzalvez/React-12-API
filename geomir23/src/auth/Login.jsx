@@ -40,7 +40,7 @@ export const Login = ({ setLogin }) => {
             setAuthToken(response.authToken);
         } else {
             console.log(response);
-            alert("Catchch");
+            alert("Catch");
         }
     }
     login() 

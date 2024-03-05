@@ -5,11 +5,11 @@ import { UserContext } from '../userContext';
 
 export const PlaceList = ({v, deletePlace}) => {
   
-    let { authToken } = useContext(UserContext)
+    let { usuari, authToken } = useContext(UserContext)
+    let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
+    
 
-    let usuari = authToken.email
-
-    console.log("AAAAAAAAA")
+    
     
     // }
     return (
@@ -51,6 +51,9 @@ export const PlaceList = ({v, deletePlace}) => {
             </>
         ) : ( <></> )}
         
+        </td>
+        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+          <img src={img } alt="" />
         </td>
 
       </tr>

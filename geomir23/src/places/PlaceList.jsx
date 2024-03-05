@@ -42,7 +42,7 @@ export const PlaceList = ({v, deletePlace}) => {
         </td>
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
         <Link to={"/places/"+v.id} className="w-max text-cyan-600"> 👁️ </Link>
-        { v.author.email === usuari ? 
+        { v.author.name === usuari ? 
         (
             <>
               

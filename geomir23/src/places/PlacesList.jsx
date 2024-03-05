@@ -20,9 +20,10 @@ export const PlacesList = () => {
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresh, setRefresh] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { authToken } = useContext(UserContext)
+  let { usuari,authToken } = useContext(UserContext)
 
-  let usuari = authToken.email
+
+  console.log(usuari)
   //variable d'estado para guardar los places
 
   useEffect(() => {
@@ -73,7 +74,7 @@ export const PlacesList = () => {
 
 
   }
-
+  
 
 
 
@@ -124,10 +125,10 @@ export const PlacesList = () => {
                   {places.map((v) => {
                     return (
 
-                      // <div>AAAAAAAAA</div>
+                      
 
                       <>
-                        {v.visibility.id == 1 || v.author.email == usuari ? (<PlaceList deletePlace={deletePlace} key={v.id} v={v} />) : <></>}
+                        {v.visibility.id == 1 || v.author.name == usuari ? (<PlaceList deletePlace={deletePlace} key={v.id} v={v} />) : <></>}
 
 
                       </>

@@ -18,137 +18,127 @@ export const PlacesShow = () => {
   const { id } = useParams();
   const navigate = useNavigate()
 
-  let { authToken } = useContext(UserContext);
-
+  let { usuari,authToken} = useContext(UserContext)
+ 
+  console.log(usuari)
 
   let [place, setPlace] = useState({});
   let [isLoading, setIsLoading] = useState(true);
   let [favorited, setFavorited] = useState(false);
   let [favorites, setFavorites] = useState(0)
-
-
-  //let [ places,setPlaces] =useState(JSON.parse(localStorage.getItem('places')) || [])
-  let places =  JSON.parse(localStorage.getItem('places')) || []
-
-
-  let index=-1
-  //let trobats = places.filter(objecte => objecte.id === id);
-
-  for (let v in places)
-  if(places[v].id === id) index=v
+  
 
       
   useEffect ( ()=> {
   
-  if (places[index].favorites == undefined)
-  {
-        console.log("SASASASASASASAS")
-        places[index].favorites=[]
-        console.log(places[index])
-
-  }
-  else {
-      // Calculem el total
-      console.log("EEEEE")
-      setFavorites(places[index].favorites.length)
-
-      // Caldrio mirar si ja existeixen favorits meus
-      for (let v in places[index].favorites)
-      { 
-        console.log(places[index].favorites[v])
-        if(places[index].favorites[v] == authToken.email) 
-        {
-          setFavorited(true)
-        }
-      }
-
-
-
-  }
-
-    setPlace(places[index])
-    setIsLoading(false)
-
+  
+ 
+    getPlace(id) 
+    
   },[])
 
+  const getPlace = async (id) => {
+    try {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        method: "GET",
+      })
+      const resposta = await data.json();
 
-  const position = [43.92853, 2.14255];
+      if (resposta.success === true) {
+        setPlace(resposta.data);
+        setIsLoading(false)
+        //console.log(place)
+        console.log(resposta.data)
+        console.log(place.file.filepath)
 
-  const deletePlace = (id,e) => {
-
-    let confirma = confirm("Estas  segur?")
-  
-    if (confirma)
-    {
-      let nouArray = places.filter(objecte => objecte.id !== id);
-      localStorage.setItem('places', JSON.stringify(nouArray));
-
-      // Caldrà esborrar els reviews per a aquest place
-      let reviews =  JSON.parse(localStorage.getItem('reviews')) || []
-      let nouArray2 = reviews.filter(objecte => objecte.id_place !== id);
-      localStorage.setItem('reviews', JSON.stringify(nouArray2));
-
-
-
-
-
-      navigate("/places/")
-      //setPlaces(nouArray)
-      // Esborrem de l'array l'element i actualitem localstorage
-      
-    }
-  
-  }
-
-  const favourite = (id,e)=> {
-
-      e.preventDefault()
-      console.log(places[index])
-
-      // index, és l'index de places que hem de modificar      
-      if (places[index].favorites == undefined)
-      {
-        places[index].favorites = []  
+      } else {
+        console.log("La resposta no ha triomfat");
       }
-      places[index].favorites.push(authToken.email)
+    } catch {
+      console.log("Error");
+    }
+  };
 
-      localStorage.setItem('places', JSON.stringify(places));
+
+  // const deletePlace = (id,e) => {
+
+  //   let confirma = confirm("Estas  segur?")
+  
+  //   if (confirma)
+  //   {
+  //     let nouArray = places.filter(objecte => objecte.id !== id);
+  //     localStorage.setItem('places', JSON.stringify(nouArray));
+
+  //     // Caldrà esborrar els reviews per a aquest place
+  //     let reviews =  JSON.parse(localStorage.getItem('reviews')) || []
+  //     let nouArray2 = reviews.filter(objecte => objecte.id_place !== id);
+  //     localStorage.setItem('reviews', JSON.stringify(nouArray2));
+
+
+
+
+
+  //     navigate("/places/")
+  //     //setPlaces(nouArray)
+  //     // Esborrem de l'array l'element i actualitem localstorage
+      
+  //   }
+  
+  // }
+
+  // const favourite = (id,e)=> {
+
+  //     e.preventDefault()
+  //     console.log(places[index])
+
+  //     // index, és l'index de places que hem de modificar      
+  //     if (places[index].favorites == undefined)
+  //     {
+  //       places[index].favorites = []  
+  //     }
+  //     places[index].favorites.push(authToken.email)
+
+  //     localStorage.setItem('places', JSON.stringify(places));
 
     
-      setFavorited(true)
-      setFavorites(favorites+1)
+  //     setFavorited(true)
+  //     setFavorites(favorites+1)
 
       
-      console.log(places[index])
+  //     console.log(places[index])
 
 
 
-  }
-  const unfavourite = (id,e)=> {
+  // }
+  // const unfavourite = (id,e)=> {
 
-    e.preventDefault()
+  //   e.preventDefault()
 
-    console.log("ddsdssds")
-    if (places[index].favorites == undefined)
-      {  //Aquí no s'hauria d'arrivar
-        console.log("mal si entres aqui")
-        places[index].favorites = []  
-      }
-    else {
-      console.log("BÉ!! si entres aqui")
+  //   console.log("ddsdssds")
+  //   if (places[index].favorites == undefined)
+  //     {  //Aquí no s'hauria d'arrivar
+  //       console.log("mal si entres aqui")
+  //       places[index].favorites = []  
+  //     }
+  //   else {
+  //     console.log("BÉ!! si entres aqui")
 
-      let trobats = places[index].favorites.filter(objecte => objecte != authToken.email && objecte != null);
-      console.log(trobats)
-      places[index].favorites = [...trobats]
-      localStorage.setItem('places', JSON.stringify(places));
-      console.log(places[index].favorites)
-      setFavorited(false)
-      setFavorites(favorites - 1)
+  //     let trobats = places[index].favorites.filter(objecte => objecte != authToken.email && objecte != null);
+  //     console.log(trobats)
+  //     places[index].favorites = [...trobats]
+  //     localStorage.setItem('places', JSON.stringify(places));
+  //     console.log(places[index].favorites)
+  //     setFavorited(false)
+  //     setFavorites(favorites - 1)
   
 
-    }
+  //   }
 
-  }
+  // }
   
 
   return (
@@ -162,7 +152,7 @@ export const PlacesShow = () => {
             <div className="relative overflow-hidden bg-no-repeat bg-cover col-span-1 ">
               <img
                 src={
-                  place.upload
+                  "https://backend.insjoaquimmir.cat/storage/" +place.file.filepath
                 }
                 alt=""
                 className=" col-span-1 w-200 h-96 items-center"
@@ -213,29 +203,15 @@ export const PlacesShow = () => {
                 ) : (
                   <></>
                 )}
-                {favorited ? (
-                  <a
-                    href="#"
-                     onClick={(e) => unfavourite(id, e)}
-                    className="bg-blue-300 hover:bg-blue-400 text-white font-bold py-2 px-4 h-10 md:h-10 uppercase"
-                  >
-                    - ❤️ {favorites}
-                  </a>
-                ) : (
-                  <a
-                    href="#"
-                    onClick={(e) => favourite(id, e)}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 h-10 md:h-10 uppercase"
-                  >
-                    + ❤️ {favorites}
-                  </a>
-                )}
+                
+                
+          
 
              
-                { <ReviewsList
+                {/* { <ReviewsList
                   id={place.id}
                   // reviews_count={place.reviews_count}
-                /> }
+                /> } */}
               </div>
             </div>
           </div>

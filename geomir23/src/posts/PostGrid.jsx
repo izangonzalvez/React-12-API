@@ -5,9 +5,8 @@ import { UserContext } from '../userContext';
 
 export const PostGrid = ({v, deletePost} ) => {
 
-  let { authToken } = useContext(UserContext)
-
-  let usuari = authToken.email
+  let { usuari, authToken } = useContext(UserContext)
+  let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
 
   console.log(v)
   console.log(usuari)
@@ -15,7 +14,7 @@ export const PostGrid = ({v, deletePost} ) => {
 
   return (
     <div key={v.id } className="p-1 rounded-xl group sm:flex space-x-6 bg-white bg-opacity-50 shadow-xl hover:rounded-2xl">
-          <img src={ v.upload } alt="art cover" loading="lazy" width="1000" height="667" className="h-56 sm:h-full w-full sm:w-5/12 object-cover object-top rounded-lg transition duration-500 group-hover:rounded-xl"/>
+          <img src={ img } alt="art cover" loading="lazy" width="1000" height="667" className="h-56 sm:h-full w-full sm:w-5/12 object-cover object-top rounded-lg transition duration-500 group-hover:rounded-xl"/>
           <div className="sm:w-7/12 pl-0 p-5">
             <div className="space-y-2">
               <div className="space-y-4">
@@ -27,7 +26,7 @@ export const PostGrid = ({v, deletePost} ) => {
               
               </div>
               <Link to={"/posts/"+v.id} className="w-max text-cyan-600"> Llegeix més  </Link>
-              { v.author.email === usuari ? 
+              { v.author.name === usuari ? 
               (   <>
                   <Link to={"/posts/edit/"+v.id} className="w-max text-cyan-600"> | Editar | </Link>
                   <a href="#" className=" w-max text-cyan-600" onClick={ (e)=> deletePost(v.id,e) }> Esborrar</a>

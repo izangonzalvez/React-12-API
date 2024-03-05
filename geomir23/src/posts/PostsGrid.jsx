@@ -16,12 +16,35 @@ export const PostsGrid = () => {
 
   // desa el retorn de dades de l'api posts
   // let [ posts, setPosts ] = useState([]);
-  let [ posts, setPosts ] = useState(JSON.parse(localStorage.getItem('posts')) || []);
+  let [ posts, setPosts ] = useState ([]);
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresca,setRefresca] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
-      
+  let { usuari,authToken } = useContext(UserContext)
+  
+  const getPosts = async (e) => {
+    try {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        method: "GET",
+      })
+      const resposta = await data.json();
+      if (resposta.success === true) {
+        setPosts(resposta.data);
+      }else{
+        console.log("La resposta no ha triomfat");
+      }            
+    } catch {
+      console.log("Error");
+    }
+  };
+
+  useEffect(()=>{
+    getPosts();
+  }, []) 
   
   // Esborrar un element
   const deletePost = (id,e) => {
@@ -60,7 +83,7 @@ export const PostsGrid = () => {
           { posts.map( (v,i)=> { return (   
                        
             <>
-            { v.visibility == 1 || v.author.email == usuari ? ( <PostGrid   deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.name == usuari ? ( <PostGrid   deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
            
           
             </>

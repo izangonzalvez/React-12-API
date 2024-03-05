@@ -9,7 +9,7 @@ export const PostList = ({v, deletePost}) => {
 
     let usuari = authToken.email
 
-    
+    let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
     
     
     // }
@@ -50,6 +50,9 @@ export const PostList = ({v, deletePost}) => {
             </>
         ) : ( <></> )}
         
+        </td>
+        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+          <img src={img } alt="" />
         </td>
 
       </tr>

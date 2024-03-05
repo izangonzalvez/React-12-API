@@ -16,10 +16,8 @@ export const PostsList = () => {
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresh,setRefresh] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { authToken} = useContext(UserContext)
-
- let usuari = authToken.email
-
+  let { usuari,authToken} = useContext(UserContext)
+  
  const getPosts = async (e) => {
   try {
     const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
@@ -109,7 +107,7 @@ const deletePost = (id,e) => {
             { posts.map( (v )=> { return (
             
             <>
-            { v.visibility.id == 1 || v.author.email == usuari ? (<PostList  deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.name == usuari ? (<PostList  deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
             
           
             </>

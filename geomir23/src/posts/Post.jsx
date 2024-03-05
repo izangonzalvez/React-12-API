@@ -18,135 +18,127 @@ export const Post = () => {
   const { id } = useParams();
   const navigate = useNavigate()
 
-  let { authToken } = useContext(UserContext);
+  let { usuari, authToken } = useContext(UserContext);
 
+  console.log(usuari)
 
   let [post, setPost] = useState({});
   let [isLoading, setIsLoading] = useState(true);
   let [liked, setLiked] = useState(false);
   let [likes, setLikes] = useState(0)
-
-
-  //let [ posts,setPosts] =useState(JSON.parse(localStorage.getItem('posts')) || [])
-  let posts =  JSON.parse(localStorage.getItem('posts')) || []
-
-
-  let index=-1
-  //let trobats = posts.filter(objecte => objecte.id === id);
-
-  for (let v in posts)
-  if(posts[v].id === id) index=v
-
       
   useEffect ( ()=> {
   
-  if (posts[index].likes == undefined)
-  {
-        posts[index].likes=[]
-        console.log(posts[index])
-
-  }
-  else {
-      // Calculem el total
-      setLikes(posts[index].likes.length)
-
-      // Caldrio mirar si ja existeixen favorits meus
-      for (let v in posts[index].likes)
-      { 
-        console.log(posts[index].likes[v])
-        if(posts[index].likes[v] == authToken.email) 
-        {
-          setLiked(true)
-        }
-      }
-
-
-
-  }
-
-    setPost(posts[index])
-    setIsLoading(false)
-
+  
+ 
+    getPost(id) 
+    
   },[])
 
+  const getPost = async (id) => {
+    try {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts/"+id, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        method: "GET",
+      })
+      const resposta = await data.json();
 
-  const position = [43.92853, 2.14255];
+      if (resposta.success === true) {
+        setPost(resposta.data);
+        setIsLoading(false)
+        //console.log(post)
+        console.log(resposta.data)
+        console.log(post.file.filepath)
 
-  const deletePost = (id,e) => {
-
-    let confirma = confirm("Estas  segur?")
-  
-    if (confirma)
-    {
-      let nouArray = posts.filter(objecte => objecte.id !== id);
-      localStorage.setItem('posts', JSON.stringify(nouArray));
-
-      // Caldrà esborrar els reviews per a aquest post
-      let reviews =  JSON.parse(localStorage.getItem('reviews')) || []
-      let nouArray2 = reviews.filter(objecte => objecte.id_post !== id);
-      localStorage.setItem('reviews', JSON.stringify(nouArray2));
-
-
-
-
-
-      navigate("/posts/")
-      //setPosts(nouArray)
-      // Esborrem de l'array l'element i actualitem localstorage
-      
-    }
-  
-  }
-
-  const likke = (id,e)=> {
-
-      e.preventDefault()
-      console.log(posts[index])
-
-      // index, és l'index de posts que hem de modificar      
-      if (posts[index].likes == undefined)
-      {
-        posts[index].likes = []  
+      } else {
+        console.log("La resposta no ha triomfat");
       }
-      posts[index].likes.push(authToken.email)
+    } catch {
+      console.log("Error");
+    }
+  };
 
-      localStorage.setItem('posts', JSON.stringify(posts));
+
+
+
+  // const deletePost = (id,e) => {
+
+  //   let confirma = confirm("Estas  segur?")
+  
+  //   if (confirma)
+  //   {
+  //     let nouArray = posts.filter(objecte => objecte.id !== id);
+  //     localStorage.setItem('posts', JSON.stringify(nouArray));
+
+  //     // Caldrà esborrar els reviews per a aquest post
+  //     let reviews =  JSON.parse(localStorage.getItem('reviews')) || []
+  //     let nouArray2 = reviews.filter(objecte => objecte.id_post !== id);
+  //     localStorage.setItem('reviews', JSON.stringify(nouArray2));
+
+
+
+
+
+  //     navigate("/posts/")
+  //     //setPosts(nouArray)
+  //     // Esborrem de l'array l'element i actualitem localstorage
+      
+  //   }
+  
+  // }
+
+  // const likke = (id,e)=> {
+
+  //     e.preventDefault()
+  //     console.log(posts[index])
+
+  //     // index, és l'index de posts que hem de modificar      
+  //     if (posts[index].likes == undefined)
+  //     {
+  //       posts[index].likes = []  
+  //     }
+  //     posts[index].likes.push(authToken.email)
+
+  //     localStorage.setItem('posts', JSON.stringify(posts));
 
     
-      setLiked(true)
-      setLikes(likes+1)
+  //     setLiked(true)
+  //     setLikes(likes+1)
 
       
-      console.log(posts[index])
+  //     console.log(posts[index])
 
 
 
-  }
-  const unlikke = (id,e)=> {
+  // }
+  // const unlikke = (id,e)=> {
 
-    e.preventDefault()
+  //   e.preventDefault()
 
-    console.log("ddsdssds")
-    if (posts[index].likes == undefined)
-      {  //Aquí no s'hauria d'arrivar
-        console.log("mal si entres aqui")
-        posts[index].likes = []  
-      }
-    else {
-      console.log("BÉ!! si entres aqui")
+  //   console.log("ddsdssds")
+  //   if (posts[index].likes == undefined)
+  //     {  //Aquí no s'hauria d'arrivar
+  //       console.log("mal si entres aqui")
+  //       posts[index].likes = []  
+  //     }
+  //   else {
+  //     console.log("BÉ!! si entres aqui")
 
-      let trobats = posts[index].likes.filter(objecte => objecte != authToken.email && objecte != null);
-      console.log(trobats)
-      posts[index].likes = [...trobats]
-      localStorage.setItem('posts', JSON.stringify(posts));
-      console.log(posts[index].likes)
-      setLiked(false)
-      setLikes(likes - 1)
+  //     let trobats = posts[index].likes.filter(objecte => objecte != authToken.email && objecte != null);
+  //     console.log(trobats)
+  //     posts[index].likes = [...trobats]
+  //     localStorage.setItem('posts', JSON.stringify(posts));
+  //     console.log(posts[index].likes)
+  //     setLiked(false)
+  //     setLikes(likes - 1)
   
 
-    }
+  //   }
 
-  }
+  // }
   
 
   return (
@@ -160,7 +152,7 @@ export const Post = () => {
             <div className="relative overflow-hidden bg-no-repeat bg-cover col-span-1 ">
               <img
                 src={
-                  post.upload
+                  "https://backend.insjoaquimmir.cat/storage/" +post.file.filepath
                 }
                 alt=""
                 className=" col-span-1 w-200 h-96 items-center"
@@ -170,7 +162,6 @@ export const Post = () => {
             </div>
 
             <div className="max-w-xl">
-             
               <span className="bg-blue-200 col-span-1 block pb-2 text-sm dark:text-gray-400">
                 Enviada per: {post.author.name}
               </span>
@@ -184,7 +175,7 @@ export const Post = () => {
               <div className="bg-orange-100 py-3 text-x2 font-semibold">
                 Descripció
               </div>
-              <p className=" bg-yellow-100">{post.description}</p>
+              <p className=" bg-yellow-100">{post.body}</p>
               <div className="mt-10 h-12 max-h-full md:max-h-screen">
                
 
@@ -228,10 +219,10 @@ export const Post = () => {
                 )}
 
              
-                { <CommentsList
+                {/* { <CommentsList
                   id={post.id}
                   // reviews_count={post.reviews_count}
-                /> }
+                /> } */}
               </div>
             </div>
           </div>

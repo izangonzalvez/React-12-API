@@ -13,13 +13,14 @@ export const PlaceEdit = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const { authToken } = useContext(UserContext);
     let [isLoading, setIsLoading] = useState(true);
+    const [uploadFile, setUploadFile] = useState(null);
     const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
     const { register, handleSubmit, formState: { errors }, reset, setValue} = useForm();
     const { id } = useParams();
     let navigate = useNavigate();
     let [place, setPlace] = useState({});
 
-   
+    
     const getPlace = async (id) => {
       try {
         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id, {
@@ -41,7 +42,7 @@ export const PlaceEdit = () => {
           setValue("latitude", latitude)
           setValue("longitude", longitude)
           setValue("visibility", visibility.id)
-          setValue("upload", upload[0])
+          // setValue("upload", upload[0])
           setIsLoading(false)
           //console.log(place)
           console.log(resposta.data)
@@ -60,13 +61,15 @@ export const PlaceEdit = () => {
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("description", data.description);
-        formData.append("upload", data.upload);
         formData.append("latitude", coordenades.latitude);
         formData.append("longitude", coordenades.longitude);
         formData.append("visibility", data.visibility);
-  
-  
-  
+        
+         // Handle file upload if provided
+        if (uploadFile) {
+          formData.append("upload", uploadFile); // Se adjunta el archivo solo si existe
+        }
+    
         const response = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id, {
           method: "POST",
           headers: {
@@ -75,13 +78,14 @@ export const PlaceEdit = () => {
           },
           body: formData
         });
-  
+    
         const responseData = await response.json();
-  
+    
         if (response.ok) {
           setSuccessMessage('¡El formulario se ha enviado con éxito!');
+          console.log('¡El formulario se ha enviado con éxito!');
           reset(); // Limpiar formulario
-           // Limpiar archivo cargado
+          setUploadFile(null);// Limpiar archivo cargado
         } else {
           setErrorMessage(responseData.message || 'Error al enviar el formulario');
         }
@@ -90,7 +94,7 @@ export const PlaceEdit = () => {
         setErrorMessage('Error al enviar el formulario');
       }
     };
-  
+   
   
     
     useEffect(() => {  
@@ -133,11 +137,12 @@ export const PlaceEdit = () => {
             <div className="mb-3 w-96">
               <label htmlFor="upload" className="form-label inline-block mb-2 text-gray-600">Imatge PNG, JPG or GIF (MAX. 800x400px)</label>
               <input
-                {...register('upload')}
-                className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
-                type="file"
-                id="upload"
-              />
+              {...register('upload')} // Utiliza 'upload' para el registro del input
+              className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
+              type="file"
+              id="upload"
+              onChange={(e) => setUploadFile(e.target.files[0])} // Utiliza setUploadFile para manejar el archivo adjunto en el estado
+            />
             </div>
           </div>
           <div className="flex flex-col gap-y-2">

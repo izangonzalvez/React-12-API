@@ -9,7 +9,7 @@ export const PlaceGrid = ({v, deletePlace} ) => {
   let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
   
 
-  console.log(v)
+  // console.log(v)
   
 
 

@@ -53,7 +53,7 @@ export const PlacesAdd = ({ setAfegir }) => {
 
       if (response.ok) {
         setSuccessMessage('¡El formulario se ha enviado con éxito!');
-        reset(); // Limpiar formulario
+        console.log('¡El formulario se ha enviado con éxito!');
         setUploadFile(null); // Limpiar archivo cargado
       } else {
         setErrorMessage(responseData.message || 'Error al enviar el formulario');

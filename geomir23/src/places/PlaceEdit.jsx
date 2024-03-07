@@ -9,21 +9,17 @@ import { useForm } from 'react-hook-form';
 
 
 export const PlaceEdit = () => {
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const { authToken } = useContext(UserContext);
+    let [isLoading, setIsLoading] = useState(true);
+    const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
     const { register, handleSubmit, formState: { errors }, reset, setValue} = useForm();
     const { id } = useParams();
     let navigate = useNavigate();
     let [place, setPlace] = useState({});
 
    
-    const handleFileChange = (e) => {
-      const file = e.target.files[0]; // Obtener el archivo seleccionado del evento
-    
-      // Verificar si se seleccionó un archivo
-      if (file) {
-        setUploadFile(file); // Actualizar el estado con el archivo seleccionado
-      }
-    };
-  
     const getPlace = async (id) => {
       try {
         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id, {
@@ -37,16 +33,25 @@ export const PlaceEdit = () => {
   
         if (resposta.success === true) {
           setPlace(resposta.data);
+
+          console.log (resposta.data )
+          const {name,description,latitude,longitude,visibility}  = resposta.data
+          setValue("name", name)
+          setValue("description", description)
+          setValue("latitude", latitude)
+          setValue("longitude", longitude)
+          setValue("visibility", visibility.id)
+          setValue("upload", upload[0])
           setIsLoading(false)
           //console.log(place)
           console.log(resposta.data)
-          console.log(place.file.filepath)
+          //console.log(place.file.filepath)
   
         } else {
           console.log("La resposta no ha triomfat");
         }
-      } catch {
-        console.log("Error");
+      } catch (err) {
+        console.log(err);
       }
     };
     
@@ -55,18 +60,15 @@ export const PlaceEdit = () => {
         const formData = new FormData();
         formData.append("name", data.name);
         formData.append("description", data.description);
-        formData.append("upload", uploadFile);
+        formData.append("upload", data.upload);
         formData.append("latitude", coordenades.latitude);
         formData.append("longitude", coordenades.longitude);
         formData.append("visibility", data.visibility);
   
-        console.log(uploadFile)  
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
+  
   
         const response = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id, {
-          method: "PUT",
+          method: "POST",
           headers: {
             'Accept': 'application/json',
             'Authorization': `Bearer ${authToken}`
@@ -79,7 +81,7 @@ export const PlaceEdit = () => {
         if (response.ok) {
           setSuccessMessage('¡El formulario se ha enviado con éxito!');
           reset(); // Limpiar formulario
-          setUploadFile(null); // Limpiar archivo cargado
+           // Limpiar archivo cargado
         } else {
           setErrorMessage(responseData.message || 'Error al enviar el formulario');
         }
@@ -115,7 +117,6 @@ export const PlaceEdit = () => {
               type="text"
               name="name"
               {...register('name')}
-              defaultValue={formulari.name}
               className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
             />
           </div>
@@ -124,7 +125,6 @@ export const PlaceEdit = () => {
             <textarea
               name="description"
               {...register('description')}
-              defaultValue={formulari.description}
               className="w-full h-32 px-4 py-3 border-2 border-gray-300 rounded-sm outline-none focus:border-blue-400"
               placeholder="Explica'ns alguna cosa d'aquest lloc..."
             ></textarea>
@@ -134,7 +134,6 @@ export const PlaceEdit = () => {
               <label htmlFor="upload" className="form-label inline-block mb-2 text-gray-600">Imatge PNG, JPG or GIF (MAX. 800x400px)</label>
               <input
                 {...register('upload')}
-                onChange={handleChange}
                 className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                 type="file"
                 id="upload"
@@ -147,7 +146,6 @@ export const PlaceEdit = () => {
               type="text"
               name="longitude"
               {...register('longitude')}
-              defaultValue={formulari.longitude}
               className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
             />
           </div>
@@ -157,7 +155,6 @@ export const PlaceEdit = () => {
               type="text"
               name="latitude"
               {...register('latitude')}
-              defaultValue={formulari.latitude}
               className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
             />
           </div>
@@ -165,7 +162,6 @@ export const PlaceEdit = () => {
           <select
             name="visibility"
             {...register('visibility')}
-            defaultValue={formulari.visibility}
             id="visibility"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           >
@@ -175,7 +171,7 @@ export const PlaceEdit = () => {
             <option value="3">Privat</option>
           </select>
           <div className="py-9">
-            {error && (<div className="flex w-full items-center space-x-2 rounded-2xl bg-red-50 mb-4 px-4 ring-2 ring-red-200 ">{error}</div>)}
+            {errors.visibility && (<div className="flex w-full items-center space-x-2 rounded-2xl bg-red-50 mb-4 px-4 ring-2 ring-red-200 ">{error}</div>)}
             <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
               Editar Entrada
             </button>

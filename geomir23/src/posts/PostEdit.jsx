@@ -5,74 +5,134 @@ import { useContext } from 'react'
 import { Navigate, useParams } from 'react-router-dom';
 import { UserContext } from '../userContext';
 import { useNavigate } from 'react-router';
+import { useForm } from 'react-hook-form';
 
 
 export const PostEdit = () => {
 
+    const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const { id } = useParams();
-    let navigate = useNavigate();
+    const navigate = useNavigate();
+    const { authToken } = useContext(UserContext);
+    const [error, setError] = useState('');
+    const [formulari, setFormulari] = useState({
+        name: '',
+        body: '',
+        longitude: '',
+        latitude: '',
+        visibility: '',
+    });
+    const [uploadFile, setUploadFile] = useState(null);
+    const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
+    const [successMessage, setSuccessMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [post, setPost] = useState()
+
+    const handleFileChange = (e) => {
+      const file = e.target.files[0]; // Obtener el archivo seleccionado del evento
+    
+      // Verificar si se seleccionó un archivo
+      if (file) {
+        setUploadFile(file); // Actualizar el estado con el archivo seleccionado
+      }
+    };
+
+    const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormulari({
+          ...formulari,
+          [name]: value
+      });
+  };
+  const getPost = async (e) => {
+    try {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        method: "GET",
+      })
+      const resposta = await data.json();
+      if (resposta.success === true) {
+        setPosts(resposta.data);
+      }else{
+        console.log("La resposta no ha triomfat");
+      }            
+    } catch {
+      console.log("Error");
+    }
+  };
+  
+  const editar = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("body", formulari.body);
+      if (uploadFile) {
+        formData.append("upload", uploadFile);
+      }
+      formData.append("latitude", coordenades.latitude);
+      formData.append("longitude", coordenades.longitude);
+      formData.append("visibility", formulari.visibility);
+
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+  
+      const response = await fetch("https://backend.insjoaquimmir.cat/api/posts/" + id, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: formData
+      });
+  
+      const responseData = await response.json();
+  
+      if (response.ok) {
+        setSuccessMessage('¡El formulario se ha enviado con éxito!');
+        reset();
+        setUploadFile(null);
+      } else {
+        setErrorMessage(responseData.message || 'Error al enviar el formulario');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setErrorMessage('Error al enviar el formulario');
+    }
+  };
+  
+    
+   useEffect( ()=> {
+      
+    navigator.geolocation.getCurrentPosition( (pos )=> {
+  
+      setCoordenades({
+  
+        latitude :  pos.coords.latitude,
+        longitude: pos.coords.longitude
+    
+      })
+      
+      console.log("Latitude is :", pos.coords.latitude);
+      console.log("Longitude is :", pos.coords.longitude);
+    });
+    
+  
+   },[])
 
    
-    let { authToken } = useContext(UserContext)
-    let [error,setError]  = useState ("")
-    let [ formulari,setFormulari] = useState({});
-
-
-    let posts = JSON.parse(localStorage.getItem('posts')) || []
-
-    let trobats = posts.filter(objecte => objecte.id === id);
-    console.log(id)
-          
-    useEffect ( ()=> {
-
-      setFormulari(trobats[0])
-  
-    },[])
-
-
-    const handleChange = (e)=> {
-
-      e.preventDefault();
-
-      setError("");
-      setFormulari({
-
-        ...formulari,
-        [e.target.name] : e.target.value
-
-      })
-
-  }
-  
-  
-    const editar = (e) => {
-
-        e.preventDefault();
-
-        console.log(formulari)
-
-        let temporal = posts.map( (v,i) => {
-
-          if (v.id == formulari.id) return formulari
-          else return v
-        }  )
-
-        console.log(temporal)
-        // Reescrivim amb l'element modificat
-        localStorage.setItem('posts', JSON.stringify(temporal));
-    
-      }
-
-
   return (
    
     <>
+    {/* Resto del código del formulario */}
      <div className="py-9 pl-9">
 
 
     
     {/* <form method="post" action="" enctype="multipart/form-data"> */}
-    <div className="py-9 flex flex-col gap-y-2">
+    {/* <div className="py-9 flex flex-col gap-y-2">
         <label className="text-gray-600" htmlFor="Name">Nom</label>
         <input
             type="text"
@@ -81,13 +141,13 @@ export const PostEdit = () => {
             className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
             onChange={ handleChange}
         />
-    </div>
+    </div> */}
 
     <div className="w-1/3">
   <label className="text-gray-600">Descripció</label>
   <textarea
-    name="description"
-    value= { formulari.description }
+    name="body"
+    value= { formulari.body }
     className="
       w-full
       h-32
@@ -106,8 +166,7 @@ export const PostEdit = () => {
   <div className="mb-3 w-96">
     <label htmlFor="formFile" className="form-label inline-block mb-2 text-gray-600">Imatge PNG, JPG or GIF (MAX. 800x400px)</label>
     <input name="upload" 
-    onChange={ handleChange}
-    // value= { formulari.upload }
+    onChange={handleFileChange}    // value= { formulari.upload }
     className="form-control
     block
     w-full
@@ -123,28 +182,26 @@ export const PostEdit = () => {
     ease-in-out
     m-0
     focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" type="file" id="upload"/>
-  </div>
+  </div>  
 </div>
 
 <span className="flex flex-col gap-y-2">
-        <label className="text-gray-600" htmlFor="Name">Longitud</label>
-        <input
-            type="text"
-            name="longitude"
-            value= { formulari.longitude }
-            onChange={ handleChange}
-            className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
-        />
+  <label className="text-gray-600" htmlFor="Name">Longitud</label>
+  <input
+    type="text"
+    value={coordenades.longitude}
+    className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
+    readOnly
+  />
 </span>
 <span className="flex flex-col gap-y-2">
-        <label className="text-gray-600" htmlFor="Name">Latitud</label>
-        <input
-            type="text"
-            name="latitude"
-            value= { formulari.latitude }
-            onChange={ handleChange}
-            className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
-        />
+  <label className="text-gray-600" htmlFor="Name">Latitud</label>
+  <input
+    type="text"
+    value={coordenades.latitude}
+    className="w-1/3 px-4 py-2 border border-gray-300 outline-none focus:border-gray-400"
+    readOnly
+  />
 </span>
 
 <label htmlFor="visibility" className="block mb-2 text-sm text-gray-600 dark:text-white">Selecciona la visibilitat</label>
@@ -171,7 +228,6 @@ export const PostEdit = () => {
    
     </div>
     
-
     </>
   )
 }

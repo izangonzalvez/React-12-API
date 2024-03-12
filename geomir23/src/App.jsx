@@ -37,8 +37,11 @@ import usus from './usuaris.json'
 //     "react-router-dom": "^6.4.3"
 function App() {
 
-  let [usuari, setUsuari] = useState("");
-  let [ authToken,setAuthToken] = useState("");
+  // let [usuari, setUsuari] = useState("");
+  // let [ authToken,setAuthToken] = useState("");
+  //aqui recogemos los datos con el slicer
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch()
 
 
   useEffect(() => {
@@ -64,7 +67,7 @@ function App() {
   return (
    <>
 
-    <UserContext.Provider value= { { usuari, setUsuari,authToken,setAuthToken }}>
+    {/* <UserContext.Provider value= { { usuari, setUsuari,authToken,setAuthToken }}> */}
       
       { authToken != "" ? (
       
@@ -100,7 +103,7 @@ function App() {
 
     ) :  <LoginRegister /> }
     
-    </UserContext.Provider>
+    {/* </UserContext.Provider> */}
 
       {/* <LoginRegister/> */}
    </>

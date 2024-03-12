@@ -6,8 +6,9 @@ import { UserContext } from "../userContext";
 
 export const Register = ({ setLogin }) => {
 
-  let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
-
+  // let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
   const {
     register,
     handleSubmit,
@@ -39,7 +40,9 @@ export const Register = ({ setLogin }) => {
 
       if (response.success) {
           localStorage.setItem('authToken', JSON.stringify(response.authToken));
-          setAuthToken(response.authToken);
+          // setAuthToken(response.authToken);
+          dispatch(setUsuari(email))
+          dispatch(setAuthToken(resposta.authToken)) 
       } else {
         console.log(response);
         alert("Cathchch");

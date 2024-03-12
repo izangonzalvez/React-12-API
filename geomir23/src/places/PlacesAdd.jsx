@@ -5,16 +5,21 @@ import "../App.css";
 import { v4 as uuidv4 } from 'uuid';
 import { Marker, Popup, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export const PlacesAdd = ({ setAfegir }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  const { authToken } = useContext(UserContext);
+  // const { authToken } = useContext(UserContext);
   const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
   const [uploadFile, setUploadFile] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [position, setPosition] = useState(null)
+
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
+
   // Función para manejar el cambio en la carga de archivos
   const handleFileChange = (e) => {
     const file = e.target.files[0]; // Obtener el archivo seleccionado del evento
@@ -35,7 +40,7 @@ export const PlacesAdd = ({ setAfegir }) => {
       formData.append("longitude", coordenades.longitude);
       formData.append("visibility", data.visibility);
 
-      console.log(uploadFile)  
+     
       for (const [key, value] of formData.entries()) {
           console.log(`${key}: ${value}`);
       }

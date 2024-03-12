@@ -9,6 +9,7 @@ import { UserContext } from '../userContext';
 import { PlacesAdd } from './PlacesAdd'
 import { useEffect } from 'react';
 import { PlaceList } from './PlaceList';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PlacesList = () => {
 
@@ -20,7 +21,9 @@ export const PlacesList = () => {
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresh, setRefresh] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { usuari,authToken } = useContext(UserContext)
+  // let { usuari,authToken } = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
 
 
   console.log(usuari)

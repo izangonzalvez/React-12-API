@@ -2,6 +2,8 @@ import React, { useContext } from 'react'
 import { useState } from 'react';
 import { UserContext } from '../userContext';
 import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthToken, setUsuari } from '../slices/auth/authSlice';
 
 
 export const Login = ({ setLogin }) => {
@@ -41,7 +43,7 @@ export const Login = ({ setLogin }) => {
             localStorage.setItem('authToken', JSON.stringify(response.authToken));
             // setAuthToken(response.authToken);
             dispatch(setUsuari(email))
-            dispatch(setAuthToken(resposta.authToken)) 
+            dispatch(setAuthToken(response.authToken)) 
         } else {
             console.log(response);
             alert("Catch");

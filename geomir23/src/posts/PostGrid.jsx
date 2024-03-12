@@ -26,7 +26,7 @@ export const PostGrid = ({v, deletePost} ) => {
               
               </div>
               <Link to={"/posts/"+v.id} className="w-max text-cyan-600"> Llegeix més  </Link>
-              { v.author.name === usuari ? 
+              { v.author.email === usuari ? 
               (   <>
                   <Link to={"/posts/edit/"+v.id} className="w-max text-cyan-600"> | Editar | </Link>
                   <a href="#" className=" w-max text-cyan-600" onClick={ (e)=> deletePost(v.id,e) }> Esborrar</a>

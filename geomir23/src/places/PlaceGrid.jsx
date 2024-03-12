@@ -2,10 +2,13 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react';
 import { UserContext } from '../userContext';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PlaceGrid = ({v, deletePlace} ) => {
 
-  let { usuari,authToken } = useContext(UserContext)
+  // let { usuari,authToken } = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
   let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
   
 
@@ -27,7 +30,7 @@ export const PlaceGrid = ({v, deletePlace} ) => {
               
               </div>
               <Link to={"/places/"+v.id} className="w-max text-cyan-600"> Llegeix més  </Link>
-              { v.author.name === usuari ? 
+              { v.author.email === usuari ? 
               (   <>
                   <Link to={"/places/edit/"+v.id} className="w-max text-cyan-600"> | Editar | </Link>
                   <a href="#" className=" w-max text-cyan-600" onClick={ (e)=> deletePlace(v.id,e) }> Esborrar</a>

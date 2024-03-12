@@ -6,12 +6,12 @@ import { Navigate, useParams } from 'react-router-dom';
 import { UserContext } from '../userContext';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export const PlaceEdit = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
-    const { authToken } = useContext(UserContext);
     let [isLoading, setIsLoading] = useState(true);
     const [uploadFile, setUploadFile] = useState(null);
     const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
@@ -20,7 +20,9 @@ export const PlaceEdit = () => {
     let navigate = useNavigate();
     let [place, setPlace] = useState({});
 
-    
+    const { usuari,authToken } = useSelector (state => state.auth)
+    const dispatch = useDispatch() 
+
     const getPlace = async (id) => {
       try {
         const data = await fetch("https://backend.insjoaquimmir.cat/api/places/"+id, {

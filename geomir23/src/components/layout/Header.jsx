@@ -3,12 +3,16 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom'
 import { UserContext } from '../../userContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAuthToken, setUsuari } from '../../slices/auth/authSlice';
 
 export const Header = () => {
 
     let [ roles, setRoles ] = useState([]);
     
-    let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext)
+    
+    const { usuari,authToken } = useSelector (state => state.auth)
+    const dispatch = useDispatch() 
     let token =  JSON.parse(localStorage.getItem('authToken')) || "";
     console.log("hola")
     setAuthToken(token)

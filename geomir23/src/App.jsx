@@ -29,6 +29,7 @@ import { PostEdit } from './posts/PostEdit'
 import dades from './dades.json'
 import revis from './reviews.json'
 import usus from './usuaris.json'
+import { useDispatch, useSelector } from 'react-redux'
 // "leaflet": "^1.9.3",
 //     "react": "^18.2.0",
 //     "react-dom": "^18.2.0",

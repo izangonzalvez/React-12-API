@@ -11,6 +11,7 @@ import { PlacesAdd } from './PlacesAdd'
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlaceGrid } from './PlaceGrid';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PlacesGrid = () => {
 
@@ -20,7 +21,9 @@ export const PlacesGrid = () => {
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresca,setRefresca] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { usuari,authToken} = useContext(UserContext)
+  // let { usuari,authToken} = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
   console.log(usuari)
   useEffect(() => {
 
@@ -88,7 +91,7 @@ export const PlacesGrid = () => {
           { places.map( (v,i)=> { return (   
                        
             <>
-            { v.visibility.id == 1 || v.author.name == usuari ? ( <PlaceGrid   deletePlace={ deletePlace } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.email == usuari ? ( <PlaceGrid   deletePlace={ deletePlace } key={v.id} v={v}/>) : <></> }
            
           
             </>

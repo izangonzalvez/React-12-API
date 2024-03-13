@@ -13,12 +13,15 @@ import { Marker, Popup, MapContainer, TileLayer, useMap } from "react-leaflet";
 import { PostsMenu } from "./PostsMenu";
 import { CommentAdd } from "./comments/CommentAdd";
 import { CommentsList } from "./comments/CommentsList";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Post = () => {
   const { id } = useParams();
   const navigate = useNavigate()
 
-  let { usuari, authToken } = useContext(UserContext);
+  // let { usuari, authToken } = useContext(UserContext);
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
 
   console.log(usuari)
 

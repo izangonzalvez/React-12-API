@@ -6,6 +6,7 @@ import { UserContext } from '../userContext';
 import { PostsAdd } from './PostsAdd'
 import { useEffect } from 'react';
 import { PostList } from './PostList';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PostsList = () => {
 
@@ -16,8 +17,9 @@ export const PostsList = () => {
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresh,setRefresh] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { usuari,authToken} = useContext(UserContext)
-  
+  // let { usuari,authToken} = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
  const getPosts = async (e) => {
   try {
     const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {

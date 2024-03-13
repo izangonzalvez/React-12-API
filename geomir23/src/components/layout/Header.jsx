@@ -27,7 +27,8 @@ export const Header = () => {
           })
           const resposta = await data.json();
           if (resposta.success === true) {
-            setUsuari(resposta.user.name);
+            console.log("AAAAAAAAAA "+resposta.user.name)
+            dispatch(setUsuari(resposta.user.email));
             setRoles(resposta.roles);
           }else{
             console.log("La resposta no ha triomfat");

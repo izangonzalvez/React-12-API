@@ -30,6 +30,7 @@ import dades from './dades.json'
 import revis from './reviews.json'
 import usus from './usuaris.json'
 import { useDispatch, useSelector } from 'react-redux'
+import { setAuthToken } from './slices/auth/authSlice'
 // "leaflet": "^1.9.3",
 //     "react": "^18.2.0",
 //     "react-dom": "^18.2.0",
@@ -44,18 +45,15 @@ function App() {
   const { usuari,authToken } = useSelector (state => state.auth)
   const dispatch = useDispatch()
 
-
+  const persistenciaUser = ()=>{
+    let persistencia = JSON.parse(localStorage.getItem('authToken')) || "";
+    if (persistencia){
+      dispatch(setAuthToken(persistencia))
+    }
+  }
   useEffect(() => {
-    // Desa les receptes a localStorage només si no hi ha cap recepta desada encara
-    if (!localStorage.getItem('places')) {
-      localStorage.setItem('places', JSON.stringify(dades));
-    }
-    if (!localStorage.getItem('reviews')) {
-      localStorage.setItem('reviews', JSON.stringify(revis));
-    }
-    if (!localStorage.getItem('usuaris')) {
-      localStorage.setItem('usuaris', JSON.stringify(usus));
-    }
+    
+    persistenciaUser();
   }, []);
 
 

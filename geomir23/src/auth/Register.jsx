@@ -3,6 +3,8 @@ import { useContext } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../userContext";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthToken, setUsuari } from "../slices/auth/authSlice";
 
 export const Register = ({ setLogin }) => {
 
@@ -42,7 +44,7 @@ export const Register = ({ setLogin }) => {
           localStorage.setItem('authToken', JSON.stringify(response.authToken));
           // setAuthToken(response.authToken);
           dispatch(setUsuari(email))
-          dispatch(setAuthToken(resposta.authToken)) 
+          dispatch(setAuthToken(response.authToken)) 
       } else {
         console.log(response);
         alert("Cathchch");

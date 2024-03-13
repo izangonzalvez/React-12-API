@@ -14,9 +14,7 @@ export const Header = () => {
     const { usuari,authToken } = useSelector (state => state.auth)
     const dispatch = useDispatch() 
     let token =  JSON.parse(localStorage.getItem('authToken')) || "";
-    console.log("hola")
-    setAuthToken(token)
-    console.log(authToken)
+  
 
     const getUser = async (e) => {
         try {
@@ -72,8 +70,6 @@ export const Header = () => {
     
     const logout = async (e) => {
         e.preventDefault();
-        setAuthToken("")
-        localStorage.removeItem('authToken');
       
         // Enviam dades a l'aPI i recollim resultat
         try {
@@ -91,7 +87,7 @@ export const Header = () => {
             // console.log(resposta.authToken);
            
             localStorage.removeItem('authToken');
-            setAuthToken(null)
+            dispatch(setAuthToken(""))
     
           } 
         } catch {

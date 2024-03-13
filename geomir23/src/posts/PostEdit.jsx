@@ -6,6 +6,8 @@ import { Navigate, useParams } from 'react-router-dom';
 import { UserContext } from '../userContext';
 import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 
 export const PostEdit = () => {
@@ -13,7 +15,6 @@ export const PostEdit = () => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
     const { id } = useParams();
     const navigate = useNavigate();
-    const { authToken } = useContext(UserContext);
     const [error, setError] = useState('');
     const [formulari, setFormulari] = useState({
         name: '',
@@ -27,7 +28,8 @@ export const PostEdit = () => {
     const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [post, setPost] = useState()
-
+    const { usuari,authToken } = useSelector (state => state.auth)
+    const dispatch = useDispatch() 
     const handleFileChange = (e) => {
       const file = e.target.files[0]; // Obtener el archivo seleccionado del evento
     
@@ -92,6 +94,7 @@ export const PostEdit = () => {
   
       if (response.ok) {
         setSuccessMessage('¡El formulario se ha enviado con éxito!');
+        console.log("S'ha enviat correctament")
         reset();
         setUploadFile(null);
       } else {

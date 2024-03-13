@@ -11,6 +11,7 @@ import { PostsAdd } from './PostsAdd'
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PostGrid } from './PostGrid';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PostsGrid = () => {
 
@@ -20,8 +21,9 @@ export const PostsGrid = () => {
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresca,setRefresca] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
-  let { usuari,authToken } = useContext(UserContext)
-  
+  // let { usuari,authToken } = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
   const getPosts = async (e) => {
     try {
       const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {

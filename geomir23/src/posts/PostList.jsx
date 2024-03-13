@@ -2,11 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react';
 import { UserContext } from '../userContext';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PostList = ({v, deletePost}) => {
   
-    let { usuari, authToken } = useContext(UserContext)
-
+    // let { usuari, authToken } = useContext(UserContext)
+    const { usuari,authToken } = useSelector (state => state.auth)
+    const dispatch = useDispatch() 
+    
     let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
     
     
@@ -39,7 +42,7 @@ export const PostList = ({v, deletePost}) => {
         </td>
         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
         <Link to={"/posts/"+v.id} className="w-max text-cyan-600"> 👁️ </Link>
-        { v.author.name === usuari ? 
+        { v.author.email === usuari ? 
         (
             <>
               

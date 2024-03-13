@@ -2,10 +2,14 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useContext } from 'react';
 import { UserContext } from '../userContext';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const PostGrid = ({v, deletePost} ) => {
 
-  let { usuari, authToken } = useContext(UserContext)
+  // let { usuari, authToken } = useContext(UserContext)
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const dispatch = useDispatch() 
+  
   let img = "https://backend.insjoaquimmir.cat/storage/" + v.file.filepath
 
   console.log(v)

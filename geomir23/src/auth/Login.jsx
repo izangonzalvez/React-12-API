@@ -4,6 +4,7 @@ import { UserContext } from '../userContext';
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthToken, setUsuari } from '../slices/auth/authSlice';
+import { doLogin } from '../slices/auth/thunks';
 
 
 export const Login = ({ setLogin }) => {
@@ -25,32 +26,11 @@ export const Login = ({ setLogin }) => {
 
   usuaris = JSON.parse(localStorage.getItem('usuaris')) || [];
   
-  const check_login = (data) =>  {
-    const {email,password } = data
-    
-    const login = async() =>{
-        const data = await fetch("https://backend.insjoaquimmir.cat/api/login", {
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-            },
-            method: "POST",
-            body: JSON.stringify({email, password})
-          })
-        const response = await data.json()
-
-        if (response.success) {
-            localStorage.setItem('authToken', JSON.stringify(response.authToken));
-            // setAuthToken(response.authToken);
-            dispatch(setUsuari(email))
-            dispatch(setAuthToken(response.authToken)) 
-        } else {
-            console.log(response);
-            alert("Catch");
-        }
+  const check_login = (data) => {
+    const {email,password} = data;
+    dispatch(doLogin({ email, password}))
     }
-    login() 
-  }
+
   
   return (
     
@@ -81,7 +61,7 @@ export const Login = ({ setLogin }) => {
                     <a href="#" className="font-medium text-gray-400 hover:text-gray-500">FORGOT?</a>
                 </div>
                 {errors.password && <p className="text-red-600 bg-yellow-200 p-2">{errors.password.message}</p>}
-                <button onClick ={ handleSubmit(check_login)}
+                <button onClick ={handleSubmit(check_login)}
                     className="w-full rounded-2xl border-b-4 border-b-blue-600 bg-blue-500 py-3 font-bold text-white hover:bg-blue-400 active:translate-y-[0.125rem] active:border-b-blue-400">
                     LOG IN
                 </button>

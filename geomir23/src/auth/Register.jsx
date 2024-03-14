@@ -3,6 +3,8 @@ import { useContext } from "react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../userContext";
+import { useDispatch, useSelector } from "react-redux";
+import { doRegister } from "../slices/auth/thunks";
 
 export const Register = ({ setLogin }) => {
 
@@ -22,34 +24,9 @@ export const Register = ({ setLogin }) => {
   usuaris = JSON.parse(localStorage.getItem("usuaris")) || [];
   console.log(usuaris)
 
-  const doRegister = (data) => {
-    
-    const { name,email,password } = data
-
-    const register = async () => {
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/register", {
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        method: "POST",
-        body: JSON.stringify({name, email, password})
-      })
-      const response = await data.json();
-      console.log(response)
-
-      if (response.success) {
-          localStorage.setItem('authToken', JSON.stringify(response.authToken));
-          // setAuthToken(response.authToken);
-          dispatch(setUsuari(email))
-          dispatch(setAuthToken(response.authToken)) 
-      } else {
-        console.log(response);
-        alert("Cathchch");
-      }
-      
-    }
-    register()
+  const onSubmit = (data) => {
+    // Utiliza un nombre diferente para la función que maneja el envío del formulario
+    dispatch(doRegister(data));
   };
 
 
@@ -132,7 +109,7 @@ export const Register = ({ setLogin }) => {
           <></>
         )}
         <button
-          onClick={handleSubmit(doRegister)}
+          onClick={handleSubmit(onSubmit)}
           className="w-full rounded-2xl border-b-4 border-b-blue-600 bg-blue-500 py-3 font-bold text-white hover:bg-blue-400 active:translate-y-[0.125rem] active:border-b-blue-400"
         >
           CREA COMPTE

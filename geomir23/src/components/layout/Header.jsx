@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { UserContext } from '../../userContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthToken, setUsuari } from '../../slices/auth/authSlice';
+import { doLogout } from '../../slices/auth/thunks';
 
 export const Header = () => {
 
@@ -69,32 +70,10 @@ export const Header = () => {
     //         });
     // }
     
-    const logout = async (e) => {
-        e.preventDefault();
-      
-        // Enviam dades a l'aPI i recollim resultat
-        try {
-          const data = await fetch("https://backend.insjoaquimmir.cat/api/logout", {
-            headers: {
-              Accept: "application/json",
-              Authorization: 'Bearer '  + authToken,
-          
-            },
-            method: "POST",
-          })
-    
-          const resposta = await data.json();
-          if (resposta.success === true){
-            // console.log(resposta.authToken);
-           
-            localStorage.removeItem('authToken');
-            dispatch(setAuthToken(""))
-    
-          } 
-        } catch {
-          console.log("Error");
-        }
-      };
+    const logout = (e) => {
+      e.preventDefault();
+      dispatch(doLogout());
+  };
     return (
       <>
   

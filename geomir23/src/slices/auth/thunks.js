@@ -69,5 +69,31 @@ export const doLogin = (dades) => {
             }
         };
     };
+    export const doLogout = () => {
+        return async (dispatch, getState) => {
+            try {
+                const response = await fetch("https://backend.insjoaquimmir.cat/api/logout", {
+                    headers: {
+                        Accept: "application/json",
+                        Authorization: `Bearer ${getState().auth.authToken}`,
+                    },
+                    method: "POST",
+                });
+    
+                const responseData = await response.json();
+    
+                if (response.ok) {
+                    localStorage.removeItem('authToken');
+                    dispatch(setAuthToken(""));
+                } else {
+                    console.error("Error during logout:", responseData.message);
+                    // Handle error if needed
+                }
+            } catch (error) {
+                console.error("Network error during logout:", error);
+                // Handle network error if needed
+            }
+        };
+    };
 
     

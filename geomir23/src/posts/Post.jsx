@@ -14,6 +14,7 @@ import { PostsMenu } from "./PostsMenu";
 import { CommentAdd } from "./comments/CommentAdd";
 import { CommentsList } from "./comments/CommentsList";
 import { useDispatch, useSelector } from "react-redux";
+import { setAdd } from "./comments/commentsSlice";
 
 export const Post = () => {
   const { id } = useParams();
@@ -52,6 +53,7 @@ export const Post = () => {
       if (resposta.success === true) {
         setPost(resposta.data);
         setIsLoading(false)
+        dispatch(setAdd(response.data.commented))
         //console.log(post)
         console.log(resposta.data)
         console.log(post.file.filepath)
@@ -222,10 +224,10 @@ export const Post = () => {
                 )}
 
              
-                {/* { <CommentsList
+                {<CommentsList
                   id={post.id}
                   // reviews_count={post.reviews_count}
-                /> } */}
+                />}
               </div>
             </div>
           </div>

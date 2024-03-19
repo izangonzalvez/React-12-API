@@ -14,8 +14,11 @@ import { PlacesMenu } from "./PlacesMenu";
 import { ReviewAdd } from "./reviews/ReviewAdd";
 import { ReviewsList } from "./reviews/ReviewsList";
 import { useDispatch, useSelector } from "react-redux";
+import { setAdd } from "./reviews/reviewsSlice";
+
 
 export const PlacesShow = () => {
+  
   const { id } = useParams();
   const navigate = useNavigate()
 
@@ -54,15 +57,17 @@ export const PlacesShow = () => {
       if (resposta.success === true) {
         setPlace(resposta.data);
         setIsLoading(false)
+        dispatch(setAdd(resposta.data.reviewed))
+        console.log(resposta.data.reviewed)
+       
         //console.log(place)
         console.log(resposta.data)
-        console.log(place.file.filepath)
 
       } else {
         console.log("La resposta no ha triomfat");
       }
-    } catch {
-      console.log("Error");
+    } catch(err) {
+      console.log(err);
     }
   };
 
@@ -211,10 +216,10 @@ export const PlacesShow = () => {
           
 
              
-                {/* { <ReviewsList
+                { <ReviewsList
                   id={place.id}
                   // reviews_count={place.reviews_count}
-                /> } */}
+                /> }
               </div>
             </div>
           </div>

@@ -6,18 +6,26 @@ import { ReviewsContext } from "./reviewsContext";
 import TimeAgo from "react-timeago";
 import catStrings from "react-timeago/lib/language-strings/ca";
 import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Review = ({ review }) => {
-  let { authToken } = useContext(UserContext);
-  let { setAdd, setRefresca, reviewsCount, setReviewsCount } = useContext(ReviewsContext);
+ 
+  const { usuari,authToken } = useSelector (state => state.auth)
+
+  const dispatch = useDispatch()
+
+  const { setAdd, setRefresca, reviewsCount, setReviewsCount, add, error, reviews } = useSelector (state => state.review)
+
   const formatter = buildFormatter(catStrings);
 
 
-  let usuari = authToken.email
+  console.log(review)
+  
+  //let usuari = authToken.email
 
   const deleteReview =  (id, e) => {
     
-    let revis = JSON.parse(localStorage.getItem('reviews')) || []
+    // let revis = JSON.parse(localStorage.getItem('reviews')) || []
     e.preventDefault();
 
     let confirma = confirm("Estas segur?");

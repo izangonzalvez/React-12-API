@@ -32,8 +32,6 @@ export const Post = () => {
   let [likes, setLikes] = useState(0)
       
   useEffect ( ()=> {
-  
-  
  
     getPost(id) 
     
@@ -41,7 +39,7 @@ export const Post = () => {
 
   const getPost = async (id) => {
     try {
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts/"+id, {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts/" + id, {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${authToken}`,
@@ -50,10 +48,10 @@ export const Post = () => {
       })
       const resposta = await data.json();
 
-      if (resposta.success === true) {
+      if (resposta.success == true) {
         setPost(resposta.data);
         setIsLoading(false)
-        dispatch(setAdd(response.data.commented))
+        dispatch(setAdd(resposta.data.commented))
         //console.log(post)
         console.log(resposta.data)
         console.log(post.file.filepath)

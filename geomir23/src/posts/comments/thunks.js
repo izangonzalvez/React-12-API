@@ -29,32 +29,32 @@ export const getComments = (page = 0, id, authToken, usuari="") => {
         });  
 };
 }
-export const delComment = (id, authToken) => {
-    return async (dispatch, getState) => {
+// export const delComment = (id, authToken) => {
+//     return async (dispatch, getState) => {
  
-        const data = await fetch(
-            "https://backend.insjoaquimmir.cat/api/posts/" + id + "/comments/" + comment.id,
-              {
-                headers: {
-                  Accept: "application/json",
-                  "Content-Type": "application/json",
-                  Authorization: "Bearer " + authToken,
-                },
-                method: "DELETE",
-              }
-          );
-          const resposta = await data.json();
+//         const data = await fetch(
+//             "https://backend.insjoaquimmir.cat/api/posts/" + id + "/comments/" + comment.id,
+//               {
+//                 headers: {
+//                   Accept: "application/json",
+//                   "Content-Type": "application/json",
+//                   Authorization: "Bearer " + authToken,
+//                 },
+//                 method: "DELETE",
+//               }
+//           );
+//           const resposta = await data.json();
  
-          if (resposta.success == true) {
-            console.log("OK");
-            dispatch (setAdd(true));
-            // usuari no l'indiquem i per defecta estarà a ""
-            dispatch (getComments(0,id,authToken))
-            const state = getState()
-            dispatch (setCommentsCount(state.commentsCount - 1));
-          }
-    };
-};
+//           if (resposta.success == true) {
+//             console.log("OK");
+//             dispatch (setAdd(true));
+//             // usuari no l'indiquem i per defecta estarà a ""
+//             dispatch (getComments(0,id,authToken))
+//             const state = getState()
+//             dispatch (setCommentsCount(state.commentsCount - 1));
+//           }
+//     };
+// };
 
 export const addComment = (id, authToken, comment) => {
     return async (dispatch) => {

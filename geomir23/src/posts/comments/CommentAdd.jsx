@@ -9,15 +9,20 @@ import { v4 as uuidv4 } from 'uuid';
 import { addComment } from './thunks';
 
 export const CommentAdd = ({ id }) => {
-   const [ comment, setComment ] = useState("")
-   const dispatch = useDispatch();
-   const authToken = useSelector(state => state.auth.authToken);
+  const { usuari,authToken } = useSelector (state => state.auth)
+  const [ comment, setComment ] = useState("")
+  const dispatch = useDispatch() 
 
-    const addComment2 = () => {
-        let temporal = {}
+
+
+  const handleCommentAdd=  ()=> {
+
+        
+        let temporal= {}
         temporal.comment = comment
-        dispatch(addComment(id, authToken, temporal));
-    };
+        dispatch(addComment(id,authToken,temporal))
+        
+  }
 
     return (
          <>
@@ -28,13 +33,7 @@ export const CommentAdd = ({ id }) => {
                    Afegeix un nou comentari
                  </h2>
                  <div class="w-full md:w-full px-3 mb-2 mt-2">
-                   <textarea
-                     onChange={(e) => setComments(e.target.value)}
-                     class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
-                     name="body"
-                     placeholder="Escriu el teu comentari"
-                     required
-                   ></textarea>
+                    <textarea onChange={ (e) => setComment(e.target.value)}  value= { comment } class="bg-gray-100 rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white" name="body" placeholder='Escriu el teu comentari' required></textarea>
                  </div>
                  <div class="w-full md:w-full flex items-start md:w-full px-3">
                    <div class="flex items-start w-1/2 text-gray-700 px-2 mr-auto">
@@ -55,7 +54,7 @@ export const CommentAdd = ({ id }) => {
                    </div>
                    <div class="-mr-1">
                      <input
-                       onClick={addComment2}
+                       onClick={handleCommentAdd}
                        type="button"
                        class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
                        value="Post Comment"

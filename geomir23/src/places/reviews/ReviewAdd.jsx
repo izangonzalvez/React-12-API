@@ -1,43 +1,28 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useContext } from 'react';
 import { UserContext } from '../../userContext';
 import { ReviewsContext } from './reviewsContext'
+import { useDispatch, useSelector } from 'react-redux';
 
 import { v4 as uuidv4 } from 'uuid';
+import { addReview } from './thunks';
 
 
 export const ReviewAdd = ({ id }) => {
-
-   let { usuari, setUsuari,authToken,setAuthToken } = useContext(UserContext);
+   const { usuari,authToken } = useSelector (state => state.auth)
    const [ review, setReview ] = useState("")
-   let {setAdd, setRefresca, reviewsCount, setReviewsCount } = useContext(ReviewsContext)
-
-   let reviews = JSON.parse(localStorage.getItem("reviews")) || []
+   const dispatch = useDispatch() 
 
 
 
-   const addReview=  ()=> {
+   const handleReviewAdd=  ()=> {
 
          
          let temporal= {}
          temporal.review = review
-         temporal.created_at = Date.now()
-         temporal.id_place=id
-         temporal.user = {}
-         temporal.user.name = authToken.name
-         temporal.user.email = authToken.email
-
-         temporal.id=uuidv4()
-
-         reviews.push(temporal)
-         localStorage.setItem('reviews', JSON.stringify(reviews));
-
-         console.log("Todo bien") 
-         setReview("")
-         setRefresca(true);
-         setReviewsCount(reviewsCount+1)
-
+         dispatch(addReview(id,authToken,temporal))
+         
    }
   return (
 
@@ -57,7 +42,7 @@ export const ReviewAdd = ({ id }) => {
                      <p class="text-xs md:text-sm pt-px">Some HTML is okay.</p>
                   </div>
                   <div class="-mr-1">
-                     <input  onClick={ addReview } type='button' class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100" value='Post Review'/>
+                     <input  onClick={ handleReviewAdd } type='button' class="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100" value='Post Review'/>
                   </div>
                </div>
                </div>

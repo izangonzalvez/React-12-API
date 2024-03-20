@@ -1,17 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {
-    comments: [],
-    page: 0,
-    isLoading: false,
-    add: true,
-    error: "",
-    reviewsCount : 0
-  }
-
 export const commentSlice = createSlice ({
     name: "comment",
-    initialState,
+    initialState: { 
+        comments: [],
+        page: 0,
+        isLoading: false,
+        add: true,
+        error: "",
+        commentsCount : 0
+    },
     reducers: {
         startLoadingComments: (state) => {
             state.isLoading = true;

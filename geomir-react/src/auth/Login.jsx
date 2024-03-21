@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 
 export default function Login({ setCanvi }) {
   let navigate = useNavigate();
-  let { authToken,setAuthToken } = useContext(UserContext)
+  let { authToken,setAuthToken, username, setUsername } = useContext(UserContext)
  
   let usuaris = JSON.parse(localStorage.getItem("usuaris")) || [];
   const { register, handleSubmit, formState: {errors} } = useForm();
@@ -17,12 +17,13 @@ export default function Login({ setCanvi }) {
   };
 
   const sendLogin = (data) => {
-  
+    
     // data.email, data.password
     let userFound = checkLogin(data)
     if (userFound !== undefined) {
       console.log("Has iniciat correctament");
-      
+      setUsername(data.email)
+      console.log(username)
       setAuthToken(userFound)
       localStorage.setItem("authToken", JSON.stringify(userFound))
       navigate("/")

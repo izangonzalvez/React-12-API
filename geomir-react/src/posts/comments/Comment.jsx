@@ -5,6 +5,7 @@ import { UserContext } from "../../userContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import TimeAgo from 'react-timeago'
+import { TextToSpeech } from "../../speechSynthesis/SpeechController";
 
 export default function Comment({ element, setComments }) {
     let { authToken } = useContext(UserContext);
@@ -25,7 +26,7 @@ export default function Comment({ element, setComments }) {
             <Card.Body>
                 <Row>
                     <Col md={8} sm={12}>
-                        <p><strong>{element.user.name}</strong>: {element.comment}<br/><span className="color-time"><TimeAgo date={element.created_at} /></span></p>
+                        <p><strong>{element.user.name}</strong>: <TextToSpeech text={element.comment}/><br/><span className="color-time"><TimeAgo date={element.created_at} /></span></p>
                     </Col>
                     {element.user.email === authToken.email && (
                         <Col md={4} sm={12} className="text-md-right text-sm-left">

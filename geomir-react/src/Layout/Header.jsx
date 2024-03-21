@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser,faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import { TextToSpeech } from "../speechSynthesis/SpeechController";
 
 export default function Header() {
   let navigate = useNavigate();
@@ -33,8 +34,12 @@ export default function Header() {
           </Button>
         </ButtonGroup>
         <div>
-          Hola: <strong>{userInfo.name}</strong>
-          <p>GEOMIR</p>
+          
+          <TextToSpeech text='Hola'/>
+          <TextToSpeech text='GEOMIR'/>
+          <TextToSpeech text='Los elementos del header pueden ser leidos por un bot'/>
+        
+          
         </div>
       </div>
       <hr />

@@ -8,7 +8,7 @@ import { UserContext } from "./userContext";
 import { useState } from 'react';
 import Footer from './Layout/Footer';
 import About from './About';
-import Post from './posts/post';
+import Post from './posts/Post';
 import PostEdit from './posts/PostEdit';
 import PostAdd from './posts/PostAdd';
 import PostsGrid from './posts/PostsGrid';
@@ -39,13 +39,13 @@ import ContactForm from './ContactForm';
 export default function App() {
   // let [authToken, setAuthToken] = useState("");
   let [authToken, setAuthToken] = useState(JSON.parse(localStorage.getItem("authToken")) || "");
-  
+  let [username, setUsername] = useState(JSON.parse(localStorage.getItem("username")) || "");
 
 
  return (
     <>
       <UserContext.Provider
-        value={{ authToken, setAuthToken }}
+        value={{ authToken, setAuthToken, username , setUsername }}
         // { authToken, setAuthToken } equival a  { authToken: authToken, setAuthToken:setAuthToken}
       >
         {authToken ? (

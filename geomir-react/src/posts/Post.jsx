@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button, Card, Col, Row, Container, Image } from 'react-bootstrap';
 import { useState, useContext, useEffect } from "react";
-import CommentsList from "./comments/commentsList";
+import CommentsList from "./comments/CommentsList";
 import { UserContext } from "../userContext";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrash,faHeart } from '@fortawesome/free-solid-svg-icons';

@@ -1,0 +1,141 @@
+$theme-colors: (
+  'danger': tomato,
+  'primary': #A7C4B5,
+  'secundari': #9AA0A8,
+  'tercero': #BEFFC7,
+  'cuarto': #A9D8B8,
+  'quinto': #5E4C5A
+);
+.text-primary{
+  color:gray
+}
+.bg {
+  background-color: black;
+  color: white;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.icons {
+  display: flex;
+  width: 75%;
+  justify-content: space-around;
+}
+
+.bg {
+  background-color: black;
+  color: white;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bg-contact{
+  background-size: cover;
+  background-image:url("/src/contact/img/bg-mountain.jpg");
+  height: 30vh;
+  
+}
+
+.izan-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1%;
+}
+
+.izan-contents {
+  min-width: 30% !important;
+  
+}
+
+.adri-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 1%;
+  gap: 1%;
+}
+.adri-card {
+  margin-bottom:1%;
+  width: 99%;
+}
+
+.imgver { 
+  width: 30% !important
+}
+.header-buttons {
+  display: flex;
+  flex-direction: column
+  
+}
+.color-time{
+  color:#9AA0A8
+}
+
+.bg-contact {
+  position: relative;
+  height: 30vh;
+  overflow: hidden;
+}
+
+.video-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.bg-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-overlay {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+/* import bootstrap to set changes */
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+@include media-breakpoint-up(md) {
+  .adri-card {
+    width:49% !important;
+  }
+  .izan-card {
+    width:49% !important;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  .adri-card {
+    width: 30% !important;
+  }
+  .izan-card {
+    width: 30% !important;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  .header-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+}

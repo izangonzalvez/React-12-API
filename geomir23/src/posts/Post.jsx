@@ -24,7 +24,7 @@ export const Post = () => {
 
   // let { usuari, authToken } = useContext(UserContext);
   const { usuari,authToken } = useSelector (state => state.auth)
-  const { post, isLoading } = useSelector (state => state.post)
+  const { post, isLoading, image } = useSelector (state => state.post)
   const dispatch = useDispatch() 
   // let [post, setPost] = useState({});
   // let [isLoading, setIsLoading] = useState(true);
@@ -36,55 +36,7 @@ export const Post = () => {
     
   },[])
 
-  // const likke = (id,e)=> {
-
-  //     e.preventDefault()
-  //     console.log(posts[index])
-
-  //     // index, és l'index de posts que hem de modificar      
-  //     if (posts[index].likes == undefined)
-  //     {
-  //       posts[index].likes = []  
-  //     }
-  //     posts[index].likes.push(authToken.email)
-
-  //     localStorage.setItem('posts', JSON.stringify(posts));
-
-    
-  //     setLiked(true)
-  //     setLikes(likes+1)
-
-      
-  //     console.log(posts[index])
-
-
-
-  // }
-  // const unlikke = (id,e)=> {
-
-  //   e.preventDefault()
-
-  //   console.log("ddsdssds")
-  //   if (posts[index].likes == undefined)
-  //     {  //Aquí no s'hauria d'arrivar
-  //       console.log("mal si entres aqui")
-  //       posts[index].likes = []  
-  //     }
-  //   else {
-  //     console.log("BÉ!! si entres aqui")
-
-  //     let trobats = posts[index].likes.filter(objecte => objecte != authToken.email && objecte != null);
-  //     console.log(trobats)
-  //     posts[index].likes = [...trobats]
-  //     localStorage.setItem('posts', JSON.stringify(posts));
-  //     console.log(posts[index].likes)
-  //     setLiked(false)
-  //     setLikes(likes - 1)
   
-
-  //   }
-
-  // }
   
   return (
     <>
@@ -97,7 +49,7 @@ export const Post = () => {
             <div className="relative overflow-hidden bg-no-repeat bg-cover col-span-1 ">
               <img
                 src={
-                  "https://backend.insjoaquimmir.cat/storage/" +post.file.filepath
+                  image
                 }
                 alt=""
                 className=" col-span-1 w-200 h-96 items-center"
@@ -108,7 +60,7 @@ export const Post = () => {
 
             <div className="max-w-xl">
               <span className="bg-blue-200 col-span-1 block pb-2 text-sm dark:text-gray-400">
-                Enviada per: {post.author.name}
+                Enviada per: {post.name}
               </span>
               <span className="self-center   px-9 bg-gray-200 col-span-2 text-x2 font-semibold">
                 Latitud: {post.latitude}{" "}
@@ -124,7 +76,7 @@ export const Post = () => {
               <div className="mt-10 h-12 max-h-full md:max-h-screen">
                
 
-                {post.author.email === authToken.email ? (
+                {post.author.email === usuari ? (
                   <>
                     <Link
                       to={"/posts/edit/" + id}
@@ -136,7 +88,7 @@ export const Post = () => {
                     <a
                       href="#"
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 h-10 md:h-10 uppercase"
-                      onClick={(e) => dispatch( delPost(v.id,authToken))}
+                      onClick={(e) => dispatch( delPost(id,authToken))}
                     >
                       {" "}
                       Esborrar

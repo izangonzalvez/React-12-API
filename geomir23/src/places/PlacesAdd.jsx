@@ -2,88 +2,67 @@ import { useContext, useState, useEffect } from 'react';
 import { UserContext } from '../userContext';
 import 'leaflet/dist/leaflet.css';
 import "../App.css";
-import { v4 as uuidv4 } from 'uuid';
 import { Marker, Popup, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import { addPlace } from '../slices/places/thunks';
 
 
-export const PlacesAdd = ({ setAfegir }) => {
+export const PlacesAdd = ({ id }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
   // const { authToken } = useContext(UserContext);
   const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
   const [uploadFile, setUploadFile] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+
   const [position, setPosition] = useState(null)
 
   const { usuari,authToken } = useSelector (state => state.auth)
   const dispatch = useDispatch() 
-
-  // Función para manejar el cambio en la carga de archivos
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Obtener el archivo seleccionado del evento
-  
-    // Verificar si se seleccionó un archivo
-    if (file) {
-      setUploadFile(file); // Actualizar el estado con el archivo seleccionado
-    }
-  };
-
-  const afegir = async (data) => {
+ 
+  const onSubmit = async (data) => {
     try {
-      const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("description", data.description);
-      formData.append("upload", uploadFile);
-      formData.append("latitude", coordenades.latitude);
-      formData.append("longitude", coordenades.longitude);
-      formData.append("visibility", data.visibility);
-
-     
-      for (const [key, value] of formData.entries()) {
-          console.log(`${key}: ${value}`);
-      }
-
-      const response = await fetch("https://backend.insjoaquimmir.cat/api/places", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: formData
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
       });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setSuccessMessage('¡El formulario se ha enviado con éxito!');
-        console.log('¡El formulario se ha enviado con éxito!');
-        setUploadFile(null); // Limpiar archivo cargado
-      } else {
-        setErrorMessage(responseData.message || 'Error al enviar el formulario');
-      }
+  
+      const latitude = pos.coords.latitude;
+      const longitude = pos.coords.longitude;
+  
+      data.latitude = latitude;
+      data.longitude = longitude;
+  
+      dispatch(addPlace(data, authToken));
     } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('Error al enviar el formulario');
+      console.error('Error al obtener las coordenadas:', error);
     }
   };
-
-
+  useEffect( ()=> {
+    
+    navigator.geolocation.getCurrentPosition( (pos )=> {
   
-  useEffect(() => {  
-    navigator.geolocation.getCurrentPosition((pos) => {
       setCoordenades({
-        latitude: pos.coords.latitude,
+  
+        latitude :  pos.coords.latitude,
         longitude: pos.coords.longitude
+    
       })
+      
       console.log("Latitude is :", pos.coords.latitude);
       console.log("Longitude is :", pos.coords.longitude);
     });
-  }, [])
+  
+  
+   },[])
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploadFile(file);
+    }
+  };
 
   function LocationMarker() {
+    
     const map = useMapEvents({
       click() {
         map.locate()
@@ -101,6 +80,9 @@ export const PlacesAdd = ({ setAfegir }) => {
       </Marker>
     )
   }
+  
+  
+
 
   return (
     <>
@@ -182,7 +164,7 @@ export const PlacesAdd = ({ setAfegir }) => {
             <option value="3">Privat</option>
           </select>
           <div className="py-9">
-            <button onClick={handleSubmit(afegir)}  type="submit" className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+            <button onClick={handleSubmit(onSubmit)}  type="submit" className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
               Afegir Entrada
             </button>
           </div>

@@ -12,65 +12,16 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PlaceGrid } from './PlaceGrid';
 import { useDispatch, useSelector } from 'react-redux';
+import { getPlaces } from '../slices/places/thunks';
 
-export const PlacesGrid = () => {
+export const PlacesGrid = ({id}) => {
+  const {usuari,authToken} = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+  const { setAdd, setRefresca, placesCount, setPlacesCount, add, error, places } = useSelector (state => state.place)
 
-  // desa el retorn de dades de l'api places
-  // let [ places, setPlaces ] = useState([]);
-  const [places, setPlaces] = useState([]);;
-  // Ho utilitzem per provar un refresc quan esborrem un element
-  let [refresca,setRefresca] = useState(false)
-  // Dades del context. Ens cal el token per poder fer les crides a l'api
-  // let { usuari,authToken} = useContext(UserContext)
-  const { usuari,authToken } = useSelector (state => state.auth)
-  const dispatch = useDispatch() 
-  console.log(usuari)
   useEffect(() => {
-
-    getPlaces()
-
-  }, []) 
-  const getPlaces = async () => {
-    try {
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        method: "GET",
-      })
-      const resposta = await data.json();
-
-      if (resposta.success === true) {
-        setPlaces(resposta.data);
-        console.log(places)
-        console.log(resposta.data)
-
-      } else {
-        console.log("La resposta no ha triomfat");
-      }
-    } catch {
-      console.log("Error");
-    }
-  };
-  
-  // Esborrar un element
-  const deletePlace = (id,e) => {
-
-    let confirma = confirm("Estas  segur?")
-  
-    if (confirma)
-    {
-      let nouArray = places.filter(objecte => objecte.id !== id);
-      localStorage.setItem('places', JSON.stringify(nouArray));
-      setPlaces(nouArray)
-      // Esborrem de l'array l'element i actualitem localstorage
-    }
-  
-  
-  }
-
-
+    dispatch(getPlaces(0, id, authToken, usuari));
+  }, []);
 
   return (
    <>
@@ -91,7 +42,7 @@ export const PlacesGrid = () => {
           { places.map( (v,i)=> { return (   
                        
             <>
-            { v.visibility.id == 1 || v.author.email == usuari ? ( <PlaceGrid   deletePlace={ deletePlace } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.name == usuari ? ( <PlaceGrid key={v.id} v={v}/>) : <></> }
            
           
             </>

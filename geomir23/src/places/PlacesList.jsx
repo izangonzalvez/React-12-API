@@ -10,75 +10,23 @@ import { PlacesAdd } from './PlacesAdd'
 import { useEffect } from 'react';
 import { PlaceList } from './PlaceList';
 import { useDispatch, useSelector } from 'react-redux';
+import { getPlaces } from '../slices/places/thunks';
 
-export const PlacesList = () => {
+export const PlacesList = ({id}) => {
 
   const [ isLoading, setIsLoading] = useState(false)
-
-  // desa el retorn de dades de l'api places
-  const [places, setPlaces] = useState([]);
 
   // Ho utilitzem per provar un refresc quan esborrem un element
   let [refresh, setRefresh] = useState(false)
   // Dades del context. Ens cal el token per poder fer les crides a l'api
   // let { usuari,authToken } = useContext(UserContext)
   const { usuari,authToken } = useSelector (state => state.auth)
-  const dispatch = useDispatch() 
-
-
-  console.log(usuari)
-  //variable d'estado para guardar los places
+  const dispatch = useDispatch()
+  const { setAdd, setRefresca, placesCount, setPlacesCount, add, error, places } = useSelector (state => state.place)
 
   useEffect(() => {
-
-    getPlaces()
-
-  }, [])
-
-  //console.log(usuari)
-
-  //
-  const getPlaces = async () => {
-    try {
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/places", {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        method: "GET",
-      })
-      const resposta = await data.json();
-
-      if (resposta.success === true) {
-        setPlaces(resposta.data);
-        console.log(places)
-        console.log(resposta.data)
-
-      } else {
-        console.log("La resposta no ha triomfat");
-      }
-    } catch {
-      console.log("Error");
-    }
-  };
-
-
-  // Esborrar un element
-  const deletePlace = (id, e) => {
-
-    let confirma = confirm("Estas  segur?")
-
-    if (confirma) {
-      let nouArray = places.filter(objecte => objecte.id !== id);
-      localStorage.setItem('places', JSON.stringify(nouArray));
-      setPlaces(nouArray)
-      // Esborrem de l'array l'element i actualitem localstorage
-    }
-
-
-  }
-  
-
+    dispatch(getPlaces(0, id, authToken, usuari));
+  }, []);
 
 
   return (
@@ -131,7 +79,7 @@ export const PlacesList = () => {
                       
 
                       <>
-                        {v.visibility.id == 1 || v.author.name == usuari ? (<PlaceList deletePlace={deletePlace} key={v.id} v={v} />) : <></>}
+                    { v.visibility.id == 1 || v.author.name == usuari ? (<PlaceList key={v.id} v={v}/>) : <></> }
 
 
                       </>

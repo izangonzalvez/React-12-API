@@ -33,6 +33,8 @@ export const getReviews = (page = 0, id, authToken, usuari="") => {
     
 };
 
+
+
 }
 export const addReview = (id, authToken, review) => {
     return async (dispatch) => {
@@ -60,5 +62,34 @@ export const addReview = (id, authToken, review) => {
         } catch (error) {
             dispatch(setError(error.message));
         }
+    };
+};
+
+export const delReview = ( review, authToken) => {
+    return async (dispatch, getState) => {
+
+
+        const data = await fetch(
+            "https://backend.insjoaquimmir.cat/api/places/" + review.place.id + "/reviews/" + review.id,
+              {
+                headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json",
+                  Authorization: "Bearer " + authToken,
+                },
+                method: "DELETE",
+              }
+          );
+          const resposta = await data.json();
+    
+          console.log(resposta);
+          if (resposta.success == true) {
+            dispatch (setAdd(false));
+            dispatch (getReviews(0,review.place.id,authToken))
+            const state = getState()
+            dispatch (setReviewsCount(state.reviewsCount - 1));
+          }
+
+
     };
 };

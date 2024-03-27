@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom'
 import { useContext } from 'react';
 import { UserContext } from '../userContext';
 import { useDispatch, useSelector } from 'react-redux';
+import { delPlace } from '../slices/places/thunks';
 
-export const PlaceGrid = ({v, deletePlace} ) => {
+export const PlaceGrid = ({v, place} ) => {
 
   // let { usuari,authToken } = useContext(UserContext)
   const { usuari,authToken } = useSelector (state => state.auth)
@@ -33,7 +34,7 @@ export const PlaceGrid = ({v, deletePlace} ) => {
               { v.author.email === usuari ? 
               (   <>
                   <Link to={"/places/edit/"+v.id} className="w-max text-cyan-600"> | Editar | </Link>
-                  <a href="#" className=" w-max text-cyan-600" onClick={ (e)=> deletePlace(v.id,e) }> Esborrar</a>
+                  <a href="#" className=" w-max text-cyan-600" onClick={ (e)=> dispatch(delPlace(v.id,authToken)) }> Esborrar</a>
                    </> 
               ) : ( <></> )}
             </div>

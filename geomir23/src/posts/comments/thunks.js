@@ -23,7 +23,7 @@ export const getComments = (page = 0, id, authToken, usuari="") => {
         }
         resposta.data.map((v) => {
             if (v.user.email === usuari) {
-                dispatch (setAdd(false));
+                // dispatch (setAdd(false));
                 console.log("Te comment");
             }
         });  
@@ -76,7 +76,7 @@ export const addComment = (id, authToken, comment) => {
             });
             const responseData = await response.json();
             if (response.ok) {
-                dispatch(setAdd(true));
+                // dispatch(setAdd(true));
                 dispatch(setCommentsCount(responseData.data.length));
                 dispatch(getComments(0,id,authToken))
             } else {

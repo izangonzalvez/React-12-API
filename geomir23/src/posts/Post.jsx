@@ -15,6 +15,8 @@ import { CommentAdd } from "./comments/CommentAdd";
 import { CommentsList } from "./comments/CommentsList";
 import { useDispatch, useSelector } from "react-redux";
 import { setAdd } from "./comments/commentsSlice";
+import { showPosts } from "../slices/posts/thunks";
+import { delPost } from '../slices/posts/thunks';
 
 export const Post = () => {
   const { id } = useParams();
@@ -22,76 +24,18 @@ export const Post = () => {
 
   // let { usuari, authToken } = useContext(UserContext);
   const { usuari,authToken } = useSelector (state => state.auth)
+  const { post, isLoading } = useSelector (state => state.post)
   const dispatch = useDispatch() 
-
-  console.log(usuari)
-
-  let [post, setPost] = useState({});
-  let [isLoading, setIsLoading] = useState(true);
+  // let [post, setPost] = useState({});
+  // let [isLoading, setIsLoading] = useState(true);
   let [liked, setLiked] = useState(false);
   let [likes, setLikes] = useState(0)
       
   useEffect ( ()=> {
- 
-    getPost(id) 
+ console.log("hola")
+  dispatch(showPosts(id, authToken) );
     
   },[])
-
-  const getPost = async (id) => {
-    try {
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts/" + id, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        method: "GET",
-      })
-      const resposta = await data.json();
-
-      if (resposta.success == true) {
-        setPost(resposta.data);
-        setIsLoading(false)
-        dispatch(setAdd(resposta.data.commented))
-        //console.log(post)
-        console.log(resposta.data)
-        console.log(post.file.filepath)
-
-      } else {
-        console.log("La resposta no ha triomfat");
-      }
-    } catch {
-      console.log("Error");
-    }
-  };
-
-
-
-
-  // const deletePost = (id,e) => {
-
-  //   let confirma = confirm("Estas  segur?")
-  
-  //   if (confirma)
-  //   {
-  //     let nouArray = posts.filter(objecte => objecte.id !== id);
-  //     localStorage.setItem('posts', JSON.stringify(nouArray));
-
-  //     // Caldrà esborrar els reviews per a aquest post
-  //     let reviews =  JSON.parse(localStorage.getItem('reviews')) || []
-  //     let nouArray2 = reviews.filter(objecte => objecte.id_post !== id);
-  //     localStorage.setItem('reviews', JSON.stringify(nouArray2));
-
-
-
-
-
-  //     navigate("/posts/")
-  //     //setPosts(nouArray)
-  //     // Esborrem de l'array l'element i actualitem localstorage
-      
-  //   }
-  
-  // }
 
   // const likke = (id,e)=> {
 
@@ -143,7 +87,6 @@ export const Post = () => {
 
   // }
   
-
   return (
     <>
      
@@ -194,7 +137,7 @@ export const Post = () => {
                     <a
                       href="#"
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 h-10 md:h-10 uppercase"
-                      onClick={(e) => deletePost(id, e)}
+                      onClick={(e) => dispatch( delPost(v.id,authToken))}
                     >
                       {" "}
                       Esborrar

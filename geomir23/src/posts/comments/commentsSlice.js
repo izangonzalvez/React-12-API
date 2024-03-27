@@ -6,7 +6,7 @@ export const commentSlice = createSlice ({
         comments: [],
         page: 0,
         isLoading: false,
-        add: true,
+        add: false,
         error: "",
         commentsCount : 0
     },

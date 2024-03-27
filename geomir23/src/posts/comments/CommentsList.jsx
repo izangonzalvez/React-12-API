@@ -17,9 +17,10 @@ export const CommentsList = ({ id }) => {
   // let {  authToken, setAuthToken } = useContext(UserContext);
   const { usuari,authToken } = useSelector (state => state.auth)
   const dispatch = useDispatch() 
-  const { setAdd, setRefresca, commentsCount, setCommentsCount, add, error, comments } = useSelector (state => state.comment)
+  const { setRefresca, commentsCount, setCommentsCount, add, error, comments } = useSelector (state => state.comment)
 
- 
+ console.log(comments)
+console.log(add)
 
   useEffect(() => {
     // dispatch(setCommentsCount(comments_count))
@@ -29,7 +30,7 @@ export const CommentsList = ({ id }) => {
     
     <>
     <CommentsContext.Provider
-      value={{ setAdd, setRefresca, commentsCount, setCommentsCount }}
+      // value={{ setRefresca, commentsCount, setCommentsCount }}
     >
       {!add ? <CommentAdd id={id} /> : <></>}
       <div class="flex mx-auto items-center justify-center  mt-6 mb-4 max-w-lg">

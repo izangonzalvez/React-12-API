@@ -1,4 +1,4 @@
-import { setAdd, setError, setPosts, setPost,setPostsCount, startLoadingPosts  } from "./postSlice";
+import { setAdd, setError, setPosts, setPost,setPostsCount, startLoadingPosts, setImage  } from "./postSlice";
 
 export const getPosts = (page = 0, id, authToken, usuari="") => {
     return async (dispatch, getState) => {
@@ -23,7 +23,7 @@ export const getPosts = (page = 0, id, authToken, usuari="") => {
         }
         resposta.data.map((v) => {
             if (v.user && v.user.email && v.user.email === usuari) {
-                dispatch(setAdd(false));
+                // dispatch(setAdd(false));
                 console.log("Te post");
             }
         }); 
@@ -133,6 +133,29 @@ export const addPost = (data, authToken) => {
       } catch (error) {
         console.error('Error al editar el post:', error);
         // Aquí podrías despachar una acción de Redux para manejar el error, si es necesario.
+      }
+    };
+  };
+
+  export const showPosts = (id, authToken) => {
+    return async (dispatch, getState) => {
+      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts/" + id, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        method: "GET",
+      })
+      const response = await data.json();
+  
+      if (response.success == true) {
+        console.log(response.data.commented)
+        dispatch(setPost(response.data));
+        dispatch(setAdd(response.data.commented));
+        dispatch(setImage("https://backend.insjoaquimmir.cat/storage/" + response.data.file.filepath));
+      } else {
+        dispatch(setError(response));
       }
     };
   };

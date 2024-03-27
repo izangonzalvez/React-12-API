@@ -1,4 +1,4 @@
-import { setAdd, setError, setPlaces, setPlace,setPlacesCount, startLoadingPlaces  } from "./placeSlice";
+import { setAdd, setError, setPlaces, setPlace,setPlacesCount, startLoadingPlaces, setImage  } from "./placeSlice";
 
 export const getPlaces = (page = 0, id, authToken, usuari="") => {
     return async (dispatch, getState) => {
@@ -137,5 +137,31 @@ export const addPlace = (data, authToken) => {
       }
     };
   };
+
+  export const showPlace = (id, authToken) => {
+    return async (dispatch, getState) => {
+        const data = await fetch("https://backend.insjoaquimmir.cat/api/places/" + id, {
+
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + authToken,
+            },
+            method: "GET"
+        });
+
+        const response = await data.json();
+
+        if (response.success == true) {
+            dispatch(setPlace(response.data));
+            dispatch(setAdd(response.data.reviewed));
+            dispatch(setImage("https://backend.insjoaquimmir.cat/storage/" + response.data.file.filepath));
+
+        } else {
+            dispatch(setError(response));
+
+        }
+    };
+};
 
   

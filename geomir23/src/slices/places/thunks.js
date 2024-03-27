@@ -144,7 +144,6 @@ export const addPlace = (data, authToken) => {
 
             headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json",
                 Authorization: "Bearer " + authToken,
             },
             method: "GET"
@@ -153,8 +152,8 @@ export const addPlace = (data, authToken) => {
         const response = await data.json();
 
         if (response.success == true) {
-            dispatch(setPlace(response.data));
             dispatch(setAdd(response.data.reviewed));
+            dispatch(setPlace(response.data));
             dispatch(setImage("https://backend.insjoaquimmir.cat/storage/" + response.data.file.filepath));
 
         } else {

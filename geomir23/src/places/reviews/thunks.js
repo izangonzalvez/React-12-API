@@ -53,7 +53,6 @@ export const addReview = (id, authToken, review) => {
             });
             const responseData = await response.json();
             if (response.ok) {
-                dispatch(setAdd(true));
                 dispatch(setReviewsCount(responseData.data.length));
                 dispatch(getReviews(0,id,authToken))
             } else {
@@ -84,7 +83,7 @@ export const delReview = ( review, authToken) => {
     
           console.log(resposta);
           if (resposta.success == true) {
-            dispatch (setAdd(false));
+            dispatch (setAdd(true));
             dispatch (getReviews(0,review.place.id,authToken))
             const state = getState()
             dispatch (setReviewsCount(state.reviewsCount - 1));

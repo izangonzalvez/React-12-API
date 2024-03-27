@@ -5,7 +5,7 @@ export const reviewSlice = createSlice({
       reviews: [],
       page: 0,
       isLoading: false,
-      add: true,
+      add: false,
       error: "",
       reviewsCount : 0
   },

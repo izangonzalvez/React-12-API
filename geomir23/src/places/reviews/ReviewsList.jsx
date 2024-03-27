@@ -21,7 +21,7 @@ export const ReviewsList = ({ id }) => {
   // Obtenim els reviews de localStorage i iniciem la variable d'estat
   // const [reviews, set
 
-  
+  console.log
   useEffect(()=>{
     dispatch(getReviews(0,id,authToken, usuari))
   }, [])
@@ -30,10 +30,10 @@ export const ReviewsList = ({ id }) => {
     
     <>
     <ReviewsContext.Provider
-      value={{ setAdd, setRefresca, reviewsCount, setReviewsCount }}
+      // value={{ setAdd, setRefresca, reviewsCount, setReviewsCount }}
     >
       {!add ? <ReviewAdd id={id} /> : <></>}
-      <div class="flex mx-auto items-center justify-center  mt-6 mx-8 mb-4 max-w-lg">
+      <div class="flex mx-auto items-center justify-center  mt-6  mb-4 max-w-lg">
         {reviewsCount == 0 ? (
           <div className="flex mb-4 w-full items-center space-x-2 rounded-2xl bg-red-50 px-4 ring-2 ring-red-200">
             No hi ha reviews

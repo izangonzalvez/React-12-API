@@ -7,6 +7,7 @@ import TimeAgo from "react-timeago";
 import catStrings from "react-timeago/lib/language-strings/ca";
 import buildFormatter from "react-timeago/lib/formatters/buildFormatter";
 import { useDispatch, useSelector } from "react-redux";
+import { delComment } from "./thunks";
 
 export const Comment = ({ comment }) => {
   // let { authToken } = useContext(UserContext);
@@ -23,27 +24,6 @@ export const Comment = ({ comment }) => {
   console.log(comment)
   
   //let usuari = authToken.email
-
-  const deleteComment =  (id, e) => {
-    
-    e.preventDefault();
-
-    let confirma = confirm("Estas segur?");
-
-    if (confirma) {
-    
-
-      let nouArray = revis.filter(objecte => objecte.id !== id);
-      console.log(nouArray)
-      localStorage.setItem('comments', JSON.stringify(nouArray));
-      setRefresca(true)
-        // provoca el refrescat del component i la reexecució de useEffect
-       
-        setAdd(true);
-        setCommentsCount(commentsCount - 1);
-      
-    }
-  };
 
 
   
@@ -70,7 +50,8 @@ export const Comment = ({ comment }) => {
             {comment.user.email === usuari ? (
               <>
                 <button
-                  onClick={(e) => deleteComment(comment.id, e)}
+                  onClick={(e) => dispatch( delComment(comment,authToken))}
+
                   type="button"
                   class="inline-block px-6 py-2 border-2 border-red-600 text-red-600 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out"
                 >

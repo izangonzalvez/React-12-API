@@ -7,60 +7,21 @@ import { PostsAdd } from './PostsAdd'
 import { useEffect } from 'react';
 import { PostList } from './PostList';
 import { useDispatch, useSelector } from 'react-redux';
+import { getPosts } from '../slices/posts/thunks';
 
-export const PostsList = () => {
+export const PostsList = ({id}) => {
 
-  // desa el retorn de dades de l'api posts
-  let [ posts, setPosts ] = useState ([]);
-
-  console.log(posts)
-  // Ho utilitzem per provar un refresc quan esborrem un element
-  let [refresh,setRefresh] = useState(false)
-  // Dades del context. Ens cal el token per poder fer les crides a l'api
-  // let { usuari,authToken} = useContext(UserContext)
+ 
   const { usuari,authToken } = useSelector (state => state.auth)
   const dispatch = useDispatch() 
- const getPosts = async (e) => {
-  try {
-    const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
-      headers: {
-        Accept: "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      method: "GET",
-    })
-    const resposta = await data.json();
-    if (resposta.success === true) {
-      setPosts(resposta.data);
-    }else{
-      console.log("La resposta no ha triomfat");
-    }            
-  } catch {
-    console.log("Error");
-  }
-};
-
-useEffect(()=>{
-  getPosts();
-}, []) 
- console.log(usuari)
+  const { setAdd, setRefresca, postsCount, setPostsCount, add, error, posts } = useSelector (state => state.post)
 
 
-  // Esborrar un element
-const deletePost = (id,e) => {
-
-  let confirma = confirm("Estas  segur?")
-
-  if (confirma)
-  {
-    let nouArray = posts.filter(objecte => objecte.id !== id);
-    localStorage.setItem('posts', JSON.stringify(nouArray));
-    setPosts(nouArray)
-    // Esborrem de l'array l'element i actualitem localstorage
-  }
+  useEffect(() => {
+    dispatch(getPosts(0, id, authToken, usuari));
+  }, []);
 
 
-}
 
 
 
@@ -109,7 +70,7 @@ const deletePost = (id,e) => {
             { posts.map( (v )=> { return (
             
             <>
-            { v.visibility.id == 1 || v.author.name == usuari ? (<PostList  deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.name == usuari ? (<PostList key={v.id} v={v}/>) : <></> }
             
           
             </>

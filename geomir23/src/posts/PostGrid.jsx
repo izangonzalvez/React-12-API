@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import { useContext } from 'react';
 import { UserContext } from '../userContext';
 import { useDispatch, useSelector } from 'react-redux';
+import { delPost } from '../slices/posts/thunks';
 
-export const PostGrid = ({v, deletePost} ) => {
+
+export const PostGrid = ({v, post} ) => {
 
   // let { usuari, authToken } = useContext(UserContext)
   const { usuari,authToken } = useSelector (state => state.auth)
@@ -33,7 +35,7 @@ export const PostGrid = ({v, deletePost} ) => {
               { v.author.email === usuari ? 
               (   <>
                   <Link to={"/posts/edit/"+v.id} className="w-max text-cyan-600"> | Editar | </Link>
-                  <a href="#" className=" w-max text-cyan-600" onClick={ (e)=> deletePost(v.id,e) }> Esborrar</a>
+                  <a href="#" className=" w-max text-cyan-600" onClick={(e) => dispatch( delPost(v.id,authToken))}> Esborrar</a>
                    </> 
               ) : ( <></> )}
             </div>

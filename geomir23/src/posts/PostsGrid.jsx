@@ -3,66 +3,26 @@ import { useContext } from 'react';
 import { UserContext } from '../userContext';
 import editar from "../assets/editar.png"
 import esborrar from "../assets/esborrar.png"
-
-// Temporal
-//import posts from '../../json/posts.json'
-//import users from '../../json/users.json'
 import { PostsAdd } from './PostsAdd'
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { PostGrid } from './PostGrid';
 import { useDispatch, useSelector } from 'react-redux';
+import { getPosts } from '../slices/posts/thunks';
 
-export const PostsGrid = () => {
+export const PostsGrid = ({id}) => {
 
-  // desa el retorn de dades de l'api posts
-  // let [ posts, setPosts ] = useState([]);
-  let [ posts, setPosts ] = useState ([]);
-  // Ho utilitzem per provar un refresc quan esborrem un element
-  let [refresca,setRefresca] = useState(false)
-  // Dades del context. Ens cal el token per poder fer les crides a l'api
-  // let { usuari,authToken } = useContext(UserContext)
+
+  // let [ posts, setPosts ] = useState ([]);
+
   const { usuari,authToken } = useSelector (state => state.auth)
   const dispatch = useDispatch() 
-  const getPosts = async (e) => {
-    try {
-      const data = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        method: "GET",
-      })
-      const resposta = await data.json();
-      if (resposta.success === true) {
-        setPosts(resposta.data);
-      }else{
-        console.log("La resposta no ha triomfat");
-      }            
-    } catch {
-      console.log("Error");
-    }
-  };
 
-  useEffect(()=>{
-    getPosts();
-  }, []) 
-  
-  // Esborrar un element
-  const deletePost = (id,e) => {
+  const { setAdd, setRefresca, postsCount, setPostsCount, add, error, posts } = useSelector (state => state.post)
 
-    let confirma = confirm("Estas  segur?")
-  
-    if (confirma)
-    {
-      let nouArray = posts.filter(objecte => objecte.id !== id);
-      localStorage.setItem('posts', JSON.stringify(nouArray));
-      setPosts(nouArray)
-      // Esborrem de l'array l'element i actualitem localstorage
-    }
-  
-  
-  }
+  useEffect(() => {
+    dispatch(getPosts(0, id, authToken, usuari));
+  }, []);
 
 
 
@@ -85,7 +45,7 @@ export const PostsGrid = () => {
           { posts.map( (v,i)=> { return (   
                        
             <>
-            { v.visibility.id == 1 || v.author.name == usuari ? ( <PostGrid   deletePost={ deletePost } key={v.id} v={v}/>) : <></> }
+            { v.visibility.id == 1 || v.author.name == usuari ? ( <PostGrid key={v.id} v={v}/>) : <></> }
            
           
             </>

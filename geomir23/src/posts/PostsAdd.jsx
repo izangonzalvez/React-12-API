@@ -1,93 +1,64 @@
-import { useContext, useState, useEffect } from 'react';
-import { UserContext } from '../userContext';
+import { useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
-import "../App.css";
-import { v4 as uuidv4 } from 'uuid';
 import { Marker, Popup, MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { addPost } from '../slices/posts/thunks';
 
-
-export const PostsAdd = ({ setAfegir }) => {
+export const PostsAdd = ({ id }) => {
   const { register, handleSubmit, formState: { errors }, reset } = useForm();
-  // const { authToken } = useContext(UserContext);
-
   const [coordenades, setCoordenades] = useState({ latitude: '0', longitude: '0' });
   const [uploadFile, setUploadFile] = useState(null);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const [position, setPosition] = useState(null)
-  // Función para manejar el cambio en la carga de archivos
-  const { usuari,authToken } = useSelector (state => state.auth)
-  const dispatch = useDispatch()
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]; // Obtener el archivo seleccionado del evento
-  
-    // Verificar si se seleccionó un archivo
-    if (file) {
-      setUploadFile(file); // Actualizar el estado con el archivo seleccionado
-    }
-  };
+  // const { usuari,authToken } = useSelector (state => state.auth)
+  const { usuari,authToken, post } = useSelector (state => state.auth)
+  // const [ post, setPost ] = useState("")
 
-  const afegir = async (data) => {
+  const dispatch = useDispatch();
+
+  const onSubmit = async (data) => {
     try {
-      const formData = new FormData();
-      formData.append("body", data.body);
-      formData.append("upload", uploadFile);
-      formData.append("latitude", coordenades.latitude);
-      formData.append("longitude", coordenades.longitude);
-      formData.append("visibility", data.visibility);
-
-     
-    console.log(uploadFile)  
-    for (const [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-    }
-
-      const response = await fetch("https://backend.insjoaquimmir.cat/api/posts", {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${authToken}`
-        },
-        body: formData
+      const pos = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
       });
-
-      const responseData = await response.json();
-
-      if (response.ok) {
-        setSuccessMessage('¡El formulario se ha enviado con éxito!');
-        reset(); // Limpiar formulario
-        setUploadFile(null); // Limpiar archivo cargado
-      } else {
-        setErrorMessage(responseData.message || 'Error al enviar el formulario');
-      }
+  
+      const latitude = pos.coords.latitude;
+      const longitude = pos.coords.longitude;
+  
+      data.latitude = latitude;
+      data.longitude = longitude;
+  
+      dispatch(addPost(data, authToken));
     } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('Error al enviar el formulario');
+      console.error('Error al obtener las coordenadas:', error);
     }
   };
-
-
   
- useEffect( ()=> {
+
+  useEffect( ()=> {
     
-  navigator.geolocation.getCurrentPosition( (pos )=> {
-
-    setCoordenades({
-
-      latitude :  pos.coords.latitude,
-      longitude: pos.coords.longitude
+    navigator.geolocation.getCurrentPosition( (pos )=> {
   
-    })
+      setCoordenades({
+  
+        latitude :  pos.coords.latitude,
+        longitude: pos.coords.longitude
     
-    console.log("Latitude is :", pos.coords.latitude);
-    console.log("Longitude is :", pos.coords.longitude);
-  });
+      })
+      
+      console.log("Latitude is :", pos.coords.latitude);
+      console.log("Longitude is :", pos.coords.longitude);
+    });
+  
+  
+   },[])
 
-
- },[])
-
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUploadFile(file);
+    }
+  };
 
   function LocationMarker() {
     
@@ -148,7 +119,7 @@ export const PostsAdd = ({ setAfegir }) => {
       message: "Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF)"
     }
   })}
-  onChange={handleFileChange} // Agrega este atributo onChange
+  onChange={handleFileChange}
   className="form-control
   block
   w-full
@@ -203,7 +174,7 @@ export const PostsAdd = ({ setAfegir }) => {
   
 </select>
 <div className="py-9">
-<button onClick={handleSubmit(afegir)}  type="submit" className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
+<button onClick={handleSubmit(onSubmit)}  type="submit" className=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
     Afegir Entrada
     </button>
     
@@ -236,5 +207,5 @@ export const PostsAdd = ({ setAfegir }) => {
     
     
     </>
-  )
-}
+  );
+};

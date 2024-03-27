@@ -32,7 +32,6 @@ export const Post = () => {
   let [likes, setLikes] = useState(0)
       
   useEffect ( ()=> {
- console.log("hola")
   dispatch(showPosts(id, authToken) );
     
   },[])
